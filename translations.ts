@@ -11,12 +11,12 @@ export const translations = {
     send: "분석 시작",
     reset: "새로운 대화",
     geminiName: "GEMINI 2.5 FLASH",
-    gptName: "GPT-4o",
+    gptName: "GPT-5 NANO",
     critiqueBtn: "교차 검증 실행",
     reCritiqueBtn: "추가 교차 검증",
     critiqueLoading: "답변을 정밀 분석하고 보완점을 찾는 중...",
     geminiCritiqueTitle: "Gemini의 검증 리포트",
-    gptCritiqueTitle: "GPT의 검증 리포트",
+    gptCritiqueTitle: "GPT-5 Nano의 검증 리포트",
     disclaimer: "AI는 부정확한 정보를 제공할 수 있습니다. 교차 검증 결과를 참고용으로 활용하세요.",
     pricing: {
       tagline: "Coming Soon",
@@ -27,7 +27,7 @@ export const translations = {
         price: "$4.99",
         desc: "가볍게 시작하는 AI 교차 검증",
         features: [
-          "일반 대화 무제한 (GPT-4o mini)",
+          "일반 대화 무제한 (GPT-5 Nano)",
           "심층 교차 검증 일 30회",
           "광고 없는 쾌적한 환경"
         ],
@@ -38,7 +38,7 @@ export const translations = {
         price: "$19.99",
         desc: "전문가를 위한 완벽한 분석 도구",
         features: [
-          "GPT-4o 무제한 대화",
+          "GPT-5.1 무제한 대화",
           "무제한 심층 교차 검증",
           "우선 답변 처리 (Fast Lane)",
           "최신 모델 우선 액세스"
@@ -64,12 +64,12 @@ export const translations = {
     send: "Analyze",
     reset: "New Chat",
     geminiName: "GEMINI 2.5 FLASH",
-    gptName: "GPT-4o",
+    gptName: "GPT-5 NANO",
     critiqueBtn: "Run Cross-Check",
     reCritiqueBtn: "Run Additional Check",
     critiqueLoading: "Analyzing answers for improvements...",
     geminiCritiqueTitle: "Gemini's Verification Report",
-    gptCritiqueTitle: "GPT's Verification Report",
+    gptCritiqueTitle: "GPT-5 Nano's Verification Report",
     disclaimer: "AI may display inaccurate info. Use cross-check results for reference.",
     pricing: {
       tagline: "Coming Soon",
@@ -80,7 +80,7 @@ export const translations = {
         price: "$4.99",
         desc: "Lightweight AI cross-check",
         features: [
-          "Unlimited General Chat (GPT-4o mini)",
+          "Unlimited General Chat (GPT-5 Nano)",
           "30 Deep Cross-Checks / Day",
           "Ad-Free Experience"
         ],
@@ -91,7 +91,7 @@ export const translations = {
         price: "$19.99",
         desc: "The ultimate tool for professionals",
         features: [
-          "Unlimited GPT-4o Chat",
+          "Unlimited GPT-5.1 Chat",
           "Unlimited Deep Cross-Checks",
           "Fast Lane Priority",
           "Priority Access to New Models"
@@ -117,12 +117,12 @@ export const translations = {
     send: "开始分析",
     reset: "新对话",
     geminiName: "GEMINI 2.5 FLASH",
-    gptName: "GPT-4o",
+    gptName: "GPT-5 NANO",
     critiqueBtn: "执行交叉验证",
     reCritiqueBtn: "追加验证",
     critiqueLoading: "正在分析答案并寻找改进点...",
     geminiCritiqueTitle: "Gemini 验证报告",
-    gptCritiqueTitle: "GPT 验证报告",
+    gptCritiqueTitle: "GPT-5 Nano 验证报告",
     disclaimer: "AI 可能会提供不准确的信息。交叉验证结果仅供参考。",
     pricing: {
       tagline: "Coming Soon",
@@ -133,7 +133,7 @@ export const translations = {
         price: "$4.99",
         desc: "轻松开始 AI 交叉验证",
         features: [
-          "无限一般对话 (GPT-4o mini)",
+          "无限一般对话 (GPT-5 Nano)",
           "每日 30 次深度交叉验证",
           "无广告体验"
         ],
@@ -144,7 +144,7 @@ export const translations = {
         price: "$19.99",
         desc: "专业人士的终极分析工具",
         features: [
-          "无限 GPT-4o 对话",
+          "无限 GPT-5.1 对话",
           "无限深度交叉验证",
           "优先响应通道 (Fast Lane)",
           "最新模型优先体验"
@@ -170,12 +170,12 @@ export const translations = {
     send: "分析開始",
     reset: "新しい対話",
     geminiName: "GEMINI 2.5 FLASH",
-    gptName: "GPT-4o",
+    gptName: "GPT-5 NANO",
     critiqueBtn: "クロスチェック実行",
     reCritiqueBtn: "追加検証を実行",
     critiqueLoading: "回答を精密分析し、改善点を探しています...",
     geminiCritiqueTitle: "Geminiによる検証レポート",
-    gptCritiqueTitle: "GPTによる検証レポート",
+    gptCritiqueTitle: "GPT-5 Nanoによる検証レポート",
     disclaimer: "AIは不正確な情報を表示する可能性があります。検証結果は参考としてご活用ください。",
     pricing: {
       tagline: "Coming Soon",
@@ -186,7 +186,7 @@ export const translations = {
         price: "$4.99",
         desc: "手軽に始めるAIクロスチェック",
         features: [
-          "一般会話無制限 (GPT-4o mini)",
+          "一般会話無制限 (GPT-5 Nano)",
           "深度クロスチェック 1日30回",
           "広告なしの快適な環境"
         ],
@@ -197,7 +197,7 @@ export const translations = {
         price: "$19.99",
         desc: "専門家のための完璧な分析ツール",
         features: [
-          "GPT-4o 無制限会話",
+          "GPT-5.1 無制限会話",
           "無制限 深度クロスチェック",
           "優先回答処理 (Fast Lane)",
           "最新モデルへの優先アクセス"

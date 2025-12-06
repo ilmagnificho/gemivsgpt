@@ -306,8 +306,8 @@ export default function App() {
                      </div>
                      <div className="flex flex-col items-center mt-2">
                         <span className="text-lg font-bold text-zinc-200 tracking-wide">ChatGPT</span>
-                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-900/10 px-2 py-0.5 rounded border border-emerald-900/20 mt-1">
-                           gpt-4o
+                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-900/10 px-2 py-0.5 rounded border border-emerald-900/20 mt-1 uppercase">
+                           gpt-5-nano
                         </span>
                      </div>
                  </div>
