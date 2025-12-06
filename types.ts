@@ -29,5 +29,11 @@ export interface ConversationRound {
   critiques: CritiqueItem[];
   isCritiqueLoading: boolean; 
 
+  // Final Conclusion
+  gptFinalConclusion?: string | null;
+  geminiFinalConclusion?: string | null;
+  isGptFinalizing?: boolean;
+  isGeminiFinalizing?: boolean;
+
   timestamp: number;
 }

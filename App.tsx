@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard } from 'lucide-react';
+import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles } from 'lucide-react';
 import { ConversationRound, ModelProvider, ChatMessage } from './types';
 import { callGeminiAPI } from './services/geminiService';
 import { callOpenAIAPI, callOpenAICritique } from './services/openaiService';
@@ -213,6 +213,69 @@ export default function App() {
     ));
     
     setPendingCritiqueRoundId(null);
+  };
+
+  const generateFinalConclusion = async (roundId: string, provider: ModelProvider) => {
+    const round = rounds.find(r => r.id === roundId);
+    if (!round || !round.gptResponse || !round.geminiResponse) return;
+
+    // Set loading state
+    setRounds(prev => prev.map(r => r.id === roundId ? { 
+      ...r, 
+      isGptFinalizing: provider === ModelProvider.GPT ? true : r.isGptFinalizing,
+      isGeminiFinalizing: provider === ModelProvider.GEMINI ? true : r.isGeminiFinalizing
+    } : r));
+
+    // Construct Synthesis Prompt
+    const synthesisPrompt = `
+    [시스템 지시]
+    당신은 최상의 답변을 도출하는 최종 결정자입니다.
+    아래 대화 내용(사용자 질문, 초기 답변들, 그리고 교차 검증 내용)을 모두 종합하여,
+    사용자의 질문에 대한 "최종적인 정답" 혹은 "가장 완성도 높은 결론"을 작성해 주세요.
+    
+    - 편향되지 않은 객관적인 시각을 유지하세요.
+    - 교차 검증에서 지적된 오류들은 반드시 수정하여 반영하세요.
+    - 서론/본론/결론 혹은 핵심 요약 등 읽기 좋은 구조로 작성하세요.
+    - 응답 언어: ${lang}
+
+    [사용자 질문]
+    ${round.userPrompt}
+
+    [초기 답변 A (GPT)]
+    ${round.gptResponse}
+
+    [초기 답변 B (Gemini)]
+    ${round.geminiResponse}
+
+    [교차 검증 및 토론 과정]
+    ${round.critiques.map((c, i) => `[검증 Round ${i+1}]\n- Gemini 의견: ${c.geminiContent}\n- GPT 의견: ${c.gptContent}`).join("\n\n")}
+    `;
+
+    try {
+      let finalResult = "";
+      if (provider === ModelProvider.GEMINI) {
+        finalResult = await callGeminiAPI(synthesisPrompt, getHistoryForContext(roundId));
+      } else {
+        // Reuse OpenAI Chat but with synthesis prompt
+        finalResult = await callOpenAIAPI(synthesisPrompt); 
+      }
+
+      setRounds(prev => prev.map(r => r.id === roundId ? { 
+        ...r, 
+        gptFinalConclusion: provider === ModelProvider.GPT ? finalResult : r.gptFinalConclusion,
+        geminiFinalConclusion: provider === ModelProvider.GEMINI ? finalResult : r.geminiFinalConclusion,
+        isGptFinalizing: provider === ModelProvider.GPT ? false : r.isGptFinalizing,
+        isGeminiFinalizing: provider === ModelProvider.GEMINI ? false : r.isGeminiFinalizing
+      } : r));
+
+    } catch (e) {
+      console.error("Finalization failed", e);
+      setRounds(prev => prev.map(r => r.id === roundId ? { 
+        ...r, 
+        isGptFinalizing: false,
+        isGeminiFinalizing: false
+      } : r));
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -445,6 +508,71 @@ export default function App() {
                      </div>
                   </div>
                 ))}
+                
+                {/* FINAL CONCLUSIONS (If Generated) */}
+                {(round.gptFinalConclusion || round.geminiFinalConclusion || round.isGptFinalizing || round.isGeminiFinalizing) && (
+                   <div className="mt-12 animate-fade-in-up">
+                      <div className="flex items-center justify-center mb-6">
+                         <div className="h-px w-full max-w-[100px] bg-zinc-800"></div>
+                         <span className="mx-4 text-xs font-bold text-zinc-500 uppercase tracking-widest border border-zinc-800 px-3 py-1 rounded-full bg-zinc-900">
+                           Final Conclusion
+                         </span>
+                         <div className="h-px w-full max-w-[100px] bg-zinc-800"></div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* GPT Final */}
+                          {(round.gptFinalConclusion || round.isGptFinalizing) && (
+                            <div className="relative">
+                               <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 rounded-2xl blur opacity-50"></div>
+                               <div className="relative bg-zinc-900 border border-emerald-500/30 rounded-2xl p-6 shadow-xl">
+                                  <div className="flex items-center gap-3 mb-4 border-b border-zinc-800 pb-3">
+                                     <div className="p-1.5 bg-emerald-500/10 rounded-lg">
+                                       <CheckCircle size={18} className="text-emerald-500" />
+                                     </div>
+                                     <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">{t.gptFinalTitle}</h3>
+                                  </div>
+                                  
+                                  {round.isGptFinalizing ? (
+                                    <div className="flex items-center gap-2 text-zinc-500 text-sm py-4 animate-pulse">
+                                       <RefreshCw size={14} className="animate-spin"/> {t.finalizingLoading}
+                                    </div>
+                                  ) : (
+                                    <div className="prose prose-invert prose-sm max-w-none text-zinc-300">
+                                      <ReactMarkdown>{round.gptFinalConclusion || ""}</ReactMarkdown>
+                                    </div>
+                                  )}
+                               </div>
+                            </div>
+                          )}
+
+                          {/* Gemini Final */}
+                          {(round.geminiFinalConclusion || round.isGeminiFinalizing) && (
+                            <div className="relative">
+                               <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600/20 to-blue-900/20 rounded-2xl blur opacity-50"></div>
+                               <div className="relative bg-zinc-900 border border-blue-500/30 rounded-2xl p-6 shadow-xl">
+                                  <div className="flex items-center gap-3 mb-4 border-b border-zinc-800 pb-3">
+                                     <div className="p-1.5 bg-blue-500/10 rounded-lg">
+                                       <Sparkles size={18} className="text-blue-500" />
+                                     </div>
+                                     <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider">{t.geminiFinalTitle}</h3>
+                                  </div>
+                                  
+                                  {round.isGeminiFinalizing ? (
+                                    <div className="flex items-center gap-2 text-zinc-500 text-sm py-4 animate-pulse">
+                                       <RefreshCw size={14} className="animate-spin"/> {t.finalizingLoading}
+                                    </div>
+                                  ) : (
+                                    <div className="prose prose-invert prose-sm max-w-none text-zinc-300">
+                                      <ReactMarkdown>{round.geminiFinalConclusion || ""}</ReactMarkdown>
+                                    </div>
+                                  )}
+                               </div>
+                            </div>
+                          )}
+                      </div>
+                   </div>
+                )}
 
                 {/* Loading State for New Critique */}
                 {round.isCritiqueLoading && (
@@ -459,17 +587,48 @@ export default function App() {
 
                 {/* Actions - Always at the bottom of the thread */}
                 {!round.isGeminiLoading && !round.isGptLoading && (
-                    <div className="flex justify-center mt-12 mb-4 relative z-20">
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-3 mt-12 mb-4 relative z-20">
+                      
+                      {/* Critique Button */}
                       <Button 
                         variant="secondary" 
                         size="md" 
                         icon={<GitCompare size={16} />}
                         onClick={() => initiateCritique(round.id)}
-                        disabled={round.isCritiqueLoading}
+                        disabled={round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing}
                         className="border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600 transition-colors shadow-lg shadow-black/20"
                       >
                         {round.critiques.length > 0 ? t.reCritiqueBtn : t.critiqueBtn}
                       </Button>
+
+                      {/* Finalize Buttons - Only Show if critiques exist */}
+                      {round.critiques.length > 0 && (
+                        <>
+                          <div className="h-8 w-px bg-zinc-800 hidden md:block"></div>
+                          
+                          <Button 
+                            variant="gpt"
+                            size="md"
+                            icon={<CheckCircle size={16} />}
+                            onClick={() => generateFinalConclusion(round.id, ModelProvider.GPT)}
+                            disabled={round.isGptFinalizing}
+                            className="bg-emerald-900/30 text-emerald-400 border border-emerald-900/50 hover:bg-emerald-900/50"
+                          >
+                            {t.gptFinalizeBtn}
+                          </Button>
+
+                          <Button 
+                            variant="gemini"
+                            size="md"
+                            icon={<Sparkles size={16} />}
+                            onClick={() => generateFinalConclusion(round.id, ModelProvider.GEMINI)}
+                            disabled={round.isGeminiFinalizing}
+                            className="bg-blue-900/30 text-blue-400 border border-blue-900/50 hover:bg-blue-900/50"
+                          >
+                            {t.geminiFinalizeBtn}
+                          </Button>
+                        </>
+                      )}
                     </div>
                 )}
                 
