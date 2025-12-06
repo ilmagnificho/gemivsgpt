@@ -18,12 +18,20 @@ export const callGeminiAPI = async (
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `Server responded with ${response.status}`);
+    const text = await response.text();
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Gemini Non-JSON Response:", text);
+      return `[Server Error] 서버 응답을 해석할 수 없습니다: ${text.substring(0, 100)}...`;
     }
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || `Server responded with ${response.status}`);
+    }
+
     return data.text || "응답을 생성할 수 없습니다.";
   } catch (error) {
     console.error("Gemini API Error:", error);

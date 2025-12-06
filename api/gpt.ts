@@ -2,6 +2,10 @@ import { OpenAI } from 'openai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Debug Log
+  console.log("GPT API Called. Method:", req.method);
+  console.log("OPENAI_API_KEY Configured:", !!process.env.OPENAI_API_KEY);
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

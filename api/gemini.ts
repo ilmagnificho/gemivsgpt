@@ -5,6 +5,10 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 const GEMINI_MODEL = 'gemini-2.5-flash';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Debug Log
+  console.log("Gemini API Called. Method:", req.method);
+  console.log("Gemini API_KEY Configured:", !!process.env.API_KEY);
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
