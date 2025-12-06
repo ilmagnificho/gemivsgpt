@@ -587,7 +587,7 @@ export default function App() {
 
                 {/* Actions - Always at the bottom of the thread */}
                 {!round.isGeminiLoading && !round.isGptLoading && (
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-3 mt-12 mb-4 relative z-20">
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-3 mt-12 mb-4 relative z-20 pb-8">
                       
                       {/* Critique Button */}
                       <Button 
@@ -602,9 +602,9 @@ export default function App() {
                       </Button>
 
                       {/* Finalize Buttons - Only Show if critiques exist */}
-                      {round.critiques.length > 0 && (
-                        <>
-                          <div className="h-8 w-px bg-zinc-800 hidden md:block"></div>
+                      {round.critiques && round.critiques.length > 0 && (
+                        <div className="flex flex-col md:flex-row gap-3 animate-fade-in-up">
+                          <div className="h-8 w-px bg-zinc-800 hidden md:block mx-1"></div>
                           
                           <Button 
                             variant="gpt"
@@ -627,7 +627,7 @@ export default function App() {
                           >
                             {t.geminiFinalizeBtn}
                           </Button>
-                        </>
+                        </div>
                       )}
                     </div>
                 )}

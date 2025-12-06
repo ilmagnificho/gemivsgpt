@@ -59,20 +59,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let responseContent = "";
 
     if (type === 'chat') {
-      // General Chat: Use gpt-5-nano for high throughput as requested
+      // System Prompt to enhance GPT-5 Nano's output quality
+      const systemInstruction = `당신은 "GPT-5 Nano"입니다. 빠르지만 매우 지능적이고 논리적인 AI 모델입니다.
+      사용자의 질문에 대해 깊이 있는 분석과 명확한 구조를 갖춘 답변을 제공해야 합니다.
+      Gemini 2.5 Flash와 경쟁하고 있으므로, 답변의 질, 정확성, 정보의 풍부함 면에서 뒤처지지 않도록 최선을 다하세요.
+      
+      [답변 가이드라인]
+      1. 단순한 정보 나열을 지양하고, 맥락과 통찰(Insight)을 포함하세요.
+      2. 서론-본론-결론 또는 핵심 요약 등 읽기 좋은 구조로 작성하세요.
+      3. 전문적인 톤을 유지하되, 설명은 명확하고 친절하게 하세요.
+      4. 질문의 의도를 파악하여 사용자가 묻지 않았더라도 도움이 될 추가 정보를 선제적으로 제공하세요.`;
+
+      // General Chat: Use gpt-5-nano
       const completion = await callOpenAIWithFallback(
         'gpt-5-nano', 
-        [{ role: 'user', content: prompt }],
+        [
+          { role: 'system', content: systemInstruction },
+          { role: 'user', content: prompt }
+        ],
         { 
-          // Attempt to use low reasoning effort for speed (simulating documented behavior)
-          reasoning_effort: 'low',
+          // Removed 'reasoning_effort: low' to allow the model to use default (better) capabilities
           temperature: 0.7 
         }
       );
       responseContent = completion.choices[0]?.message?.content || "";
 
     } else if (type === 'critique') {
-      // Critique: Use gpt-5-nano as requested (Changed from gpt-5.1)
+      // Critique: Use gpt-5-nano as requested
       const isReverify = userOriginalPrompt?.includes("REVERIFY");
       
       const systemPrompt = `당신은 엄격하고 논리적인 AI 검토자입니다. 상대방 AI(Gemini)의 답변을 분석하여 사실 관계 오류, 논리적 비약, 혹은 누락된 정보를 지적하세요. 
@@ -91,7 +104,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       `;
 
       const completion = await callOpenAIWithFallback(
-        'gpt-5-nano', // Changed from gpt-5.1 to gpt-5-nano
+        'gpt-5-nano', 
         [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userContent }
