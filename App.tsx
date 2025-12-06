@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard } from 'lucide-react';
@@ -328,7 +327,7 @@ export default function App() {
                      <div className="flex flex-col items-center mt-2">
                         <span className="text-lg font-bold text-zinc-200 tracking-wide">Gemini</span>
                         <span className="text-[10px] font-mono text-blue-400/80 bg-blue-900/10 px-2 py-0.5 rounded border border-blue-900/20 mt-1">
-                           gemini-2.5-flash
+                           gemini-1.5-flash
                         </span>
                      </div>
                  </div>

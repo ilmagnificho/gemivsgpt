@@ -68,6 +68,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error: any) {
     console.error('OpenAI API Error:', error);
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    // Ensure we send back a useful error message even if message prop is missing
+    const errorMessage = error.message || JSON.stringify(error);
+    return res.status(500).json({ error: errorMessage });
   }
 }

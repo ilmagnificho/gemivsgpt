@@ -25,12 +25,16 @@ export const callOpenAIAPI = async (prompt: string): Promise<string> => {
     } catch (e) {
       // If parsing fails, it's likely an HTML error page from Vercel (500/404)
       console.error("OpenAI Non-JSON Response:", text);
-      return `[Server Error] 서버 응답을 해석할 수 없습니다: ${text.substring(0, 100)}...`;
+      // Try to extract title from HTML if possible
+      const match = text.match(/<title>(.*?)<\/title>/i);
+      const title = match ? match[1] : "Unknown Server Error";
+      return `[Server Error] 서버 응답 오류: ${title} (Check Console)`;
     }
 
     if (!response.ok) {
       console.error("OpenAI Server Error:", data);
-      return `[OpenAI Error] ${data.error || `요청이 실패했습니다. (Status: ${response.status})`}`;
+      const errorMsg = data.error || data.message || JSON.stringify(data);
+      return `[OpenAI Error] ${errorMsg}`;
     }
 
     return data.text || "응답을 생성할 수 없습니다.";
@@ -65,11 +69,14 @@ export const callOpenAICritique = async (geminiResponse: string, userPrompt: str
       data = JSON.parse(text);
     } catch (e) {
       console.error("OpenAI Critique Non-JSON Response:", text);
-      return `[Server Error] 서버 응답을 해석할 수 없습니다: ${text.substring(0, 100)}...`;
+      const match = text.match(/<title>(.*?)<\/title>/i);
+      const title = match ? match[1] : "Unknown Server Error";
+      return `[Server Error] 서버 응답 오류: ${title}`;
     }
 
     if (!response.ok) {
-      throw new Error(data.error || `Server responded with ${response.status}`);
+      const errorMsg = data.error || data.message || JSON.stringify(data);
+      throw new Error(errorMsg);
     }
 
     return data.text || "검증 리포트를 생성할 수 없습니다.";

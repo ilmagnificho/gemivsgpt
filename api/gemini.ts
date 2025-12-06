@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Use the stable alias
-const GEMINI_MODEL = 'gemini-2.5-flash';
+// Use the stable model available to public keys
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Debug Log
@@ -45,7 +45,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error: any) {
     console.error('Gemini API Error:', error);
-    // Return specific error message to client
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    // Return error message safely
+    return res.status(500).json({ 
+      error: error.message || 'Unknown Gemini API Error',
+      details: JSON.stringify(error)
+    });
   }
 }
