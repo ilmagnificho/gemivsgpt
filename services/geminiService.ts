@@ -19,7 +19,8 @@ export const callGeminiAPI = async (
     });
 
     if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server responded with ${response.status}`);
     }
 
     const data = await response.json();

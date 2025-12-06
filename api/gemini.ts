@@ -1,7 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const GEMINI_MODEL = 'gemini-2.5-flash-preview-09-2025';
+// Use the stable alias
+const GEMINI_MODEL = 'gemini-2.5-flash';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -11,15 +12,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { prompt, history, systemInstruction } = req.body;
 
   if (!process.env.API_KEY) {
-    return res.status(500).json({ error: 'Gemini API Key is not configured on the server.' });
+    console.error("Missing API_KEY (Gemini) environment variable");
+    return res.status(500).json({ error: 'Gemini API Key is not configured on the server environment variables.' });
   }
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    // Construct history in the format Gemini expects
-    // Note: The @google/genai SDK on Node might have slightly different history expectations
-    // than the pure REST API, but generally matches.
     const validHistory = history?.map((msg: any) => ({
       role: msg.role,
       parts: msg.parts
@@ -42,6 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error: any) {
     console.error('Gemini API Error:', error);
+    // Return specific error message to client
     return res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }

@@ -20,7 +20,7 @@ export const callOpenAIAPI = async (prompt: string): Promise<string> => {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error("OpenAI Server Error:", errorData);
-      return `[OpenAI Error] 요청이 실패했습니다. (Status: ${response.status})`;
+      return `[OpenAI Error] ${errorData.error || `요청이 실패했습니다. (Status: ${response.status})`}`;
     }
 
     const data = await response.json();
@@ -50,7 +50,8 @@ export const callOpenAICritique = async (geminiResponse: string, userPrompt: str
     });
 
     if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server responded with ${response.status}`);
     }
 
     const data = await response.json();

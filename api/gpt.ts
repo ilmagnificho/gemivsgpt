@@ -1,11 +1,6 @@
 import { OpenAI } from 'openai';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Initialize OpenAI Client on the server side
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -14,8 +9,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { prompt, type, geminiResponse, userOriginalPrompt } = req.body;
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'OpenAI API Key is not configured on the server.' });
+    console.error("Missing OPENAI_API_KEY environment variable");
+    return res.status(500).json({ error: 'OpenAI API Key is not configured on the server environment variables.' });
   }
+
+  // Initialize OpenAI Client inside the handler to prevent cold-start crashes if env is missing
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   try {
     let responseContent = "";
