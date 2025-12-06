@@ -14,6 +14,8 @@ export const translations = {
     gptName: "GPT-5 NANO",
     critiqueBtn: "교차 검증 실행",
     reCritiqueBtn: "추가 검증",
+    nextStepGuide: "검증이 완료되었습니다. 추가 검증을 하거나 최종 결론을 도출할 수 있습니다.",
+    finalSelectGuide: "최종 결론을 도출할 AI 모델을 선택하세요:",
     gptFinalizeBtn: "GPT로 최종 결론",
     geminiFinalizeBtn: "Gemini로 최종 결론",
     critiqueLoading: "답변을 정밀 분석하고 보완점을 찾는 중...",
@@ -23,6 +25,11 @@ export const translations = {
     geminiFinalTitle: "Gemini의 최종 결론",
     gptFinalTitle: "GPT-5 Nano의 최종 결론",
     disclaimer: "AI는 부정확한 정보를 제공할 수 있습니다. 교차 검증 결과를 참고용으로 활용하세요.",
+    adModal: {
+      removeAds: "광고 없이 검증하기",
+      waitingBored: "기다리기 지루하신가요?",
+      goPremium: "Pro 대기 명단 등록하고 광고 제거 >"
+    },
     pricing: {
       tagline: "Coming Soon",
       title: "더 강력한 교차 검증 경험",
@@ -72,6 +79,8 @@ export const translations = {
     gptName: "GPT-5 NANO",
     critiqueBtn: "Run Cross-Check",
     reCritiqueBtn: "Add Check",
+    nextStepGuide: "Verification complete. You can run additional checks or generate a final conclusion.",
+    finalSelectGuide: "Select an AI model to synthesize the final conclusion:",
     gptFinalizeBtn: "Finalize with GPT",
     geminiFinalizeBtn: "Finalize with Gemini",
     critiqueLoading: "Analyzing answers for improvements...",
@@ -81,6 +90,11 @@ export const translations = {
     geminiFinalTitle: "Gemini's Final Conclusion",
     gptFinalTitle: "GPT-5 Nano's Final Conclusion",
     disclaimer: "AI may display inaccurate info. Use cross-check results for reference.",
+    adModal: {
+      removeAds: "Verify without Ads",
+      waitingBored: "Tired of waiting?",
+      goPremium: "Join Pro Waitlist to Remove Ads >"
+    },
     pricing: {
       tagline: "Coming Soon",
       title: "Enhanced Cross-Verification",
@@ -130,6 +144,8 @@ export const translations = {
     gptName: "GPT-5 NANO",
     critiqueBtn: "执行交叉验证",
     reCritiqueBtn: "追加验证",
+    nextStepGuide: "验证完成。您可以进行额外验证或得出最终结论。",
+    finalSelectGuide: "选择 AI 模型以得出最终结论：",
     gptFinalizeBtn: "GPT 最终总结",
     geminiFinalizeBtn: "Gemini 最终总结",
     critiqueLoading: "正在分析答案并寻找改进点...",
@@ -139,6 +155,11 @@ export const translations = {
     geminiFinalTitle: "Gemini 最终结论",
     gptFinalTitle: "GPT-5 Nano 最终结论",
     disclaimer: "AI 可能会提供不准确的信息。交叉验证结果仅供参考。",
+    adModal: {
+      removeAds: "无广告验证",
+      waitingBored: "不想等待？",
+      goPremium: "加入 Pro 候补名单以移除广告 >"
+    },
     pricing: {
       tagline: "Coming Soon",
       title: "更强大的交叉验证体验",
@@ -188,6 +209,8 @@ export const translations = {
     gptName: "GPT-5 NANO",
     critiqueBtn: "クロスチェック実行",
     reCritiqueBtn: "追加検証",
+    nextStepGuide: "検証が完了しました。追加検証を行うか、最終結論を導き出すことができます。",
+    finalSelectGuide: "最終結論を導き出すAIモデルを選択してください：",
     gptFinalizeBtn: "GPTで最終結論",
     geminiFinalizeBtn: "Geminiで最終結論",
     critiqueLoading: "回答を精密分析し、改善点を探しています...",
@@ -197,6 +220,11 @@ export const translations = {
     geminiFinalTitle: "Geminiの最終結論",
     gptFinalTitle: "GPT-5 Nanoの最終結論",
     disclaimer: "AIは不正確な情報を表示する可能性があります。検証結果は参考としてご活用ください。",
+    adModal: {
+      removeAds: "広告なしで検証",
+      waitingBored: "待ちきれませんか？",
+      goPremium: "Pro待機リストに登録して広告を削除 >"
+    },
     pricing: {
       tagline: "Coming Soon",
       title: "より強力なクロスチェック体験",

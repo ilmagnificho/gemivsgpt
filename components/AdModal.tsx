@@ -1,14 +1,15 @@
 
 import React, { useEffect, useState } from 'react';
-import { X, Loader2, ShieldCheck, ExternalLink } from 'lucide-react';
+import { X, Loader2, ShieldCheck, ExternalLink, Zap } from 'lucide-react';
 
 interface AdModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAdComplete: () => void;
+  onGoPremium: () => void;
 }
 
-export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete }) => {
+export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete, onGoPremium }) => {
   const [timer, setTimer] = useState(5);
   const [canClose, setCanClose] = useState(false);
 
@@ -52,7 +53,16 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete 
         </div>
 
         {/* Ad Container */}
-        <div className="p-6 flex flex-col items-center justify-center bg-zinc-950 min-h-[320px] relative">
+        <div className="p-6 flex flex-col items-center justify-center bg-zinc-950 min-h-[300px] relative">
+           {/* Upsell Link - New Feature */}
+           <button 
+             onClick={onGoPremium}
+             className="w-full mb-4 py-2 bg-gradient-to-r from-indigo-900/50 to-blue-900/50 border border-blue-500/30 rounded-lg flex items-center justify-center gap-2 text-xs text-blue-200 hover:bg-blue-900/30 transition-all group"
+           >
+             <Zap size={14} className="text-yellow-400 fill-yellow-400 group-hover:scale-110 transition-transform" />
+             <span className="font-medium">기다리기 지루하신가요? 광고 없이 검증하기 &gt;</span>
+           </button>
+
            {/* AdSense Placeholder Area */}
            <div className="w-full flex-1 bg-zinc-900 border border-dashed border-zinc-700 rounded-lg flex flex-col items-center justify-center text-center p-6 relative overflow-hidden group cursor-pointer hover:border-zinc-500 transition-colors">
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>

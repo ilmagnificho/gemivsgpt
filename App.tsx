@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles } from 'lucide-react';
@@ -290,7 +291,11 @@ export default function App() {
       <AdModal 
         isOpen={showAdModal} 
         onClose={() => setShowAdModal(false)} 
-        onAdComplete={() => executeCritique()} 
+        onAdComplete={() => executeCritique()}
+        onGoPremium={() => {
+          setShowAdModal(false);
+          setShowPricingModal(true);
+        }}
       />
       
       <PricingModal
@@ -587,46 +592,53 @@ export default function App() {
 
                 {/* Actions - Always at the bottom of the thread */}
                 {!round.isGeminiLoading && !round.isGptLoading && (
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-3 mt-12 mb-4 relative z-20 pb-8">
+                    <div className="flex flex-col items-center gap-6 mt-12 mb-4 relative z-20 pb-8">
                       
                       {/* Critique Button */}
-                      <Button 
-                        variant="secondary" 
-                        size="md" 
-                        icon={<GitCompare size={16} />}
-                        onClick={() => initiateCritique(round.id)}
-                        disabled={round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing}
-                        className="border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600 transition-colors shadow-lg shadow-black/20"
-                      >
-                        {round.critiques.length > 0 ? t.reCritiqueBtn : t.critiqueBtn}
-                      </Button>
+                      <div className="flex justify-center">
+                        <Button 
+                          variant="secondary" 
+                          size="md" 
+                          icon={<GitCompare size={16} />}
+                          onClick={() => initiateCritique(round.id)}
+                          disabled={round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing}
+                          className="border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600 transition-colors shadow-lg shadow-black/20"
+                        >
+                          {round.critiques.length > 0 ? t.reCritiqueBtn : t.critiqueBtn}
+                        </Button>
+                      </div>
 
                       {/* Finalize Buttons - Only Show if critiques exist */}
                       {round.critiques && round.critiques.length > 0 && (
-                        <div className="flex flex-col md:flex-row gap-3 animate-fade-in-up">
-                          <div className="h-8 w-px bg-zinc-800 hidden md:block mx-1"></div>
+                        <div className="w-full max-w-2xl bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 animate-fade-in-up flex flex-col items-center">
+                          <div className="flex flex-col items-center mb-4 text-center">
+                             <h4 className="text-zinc-400 text-sm font-medium mb-1">{t.nextStepGuide}</h4>
+                             <p className="text-xs text-zinc-500">{t.finalSelectGuide}</p>
+                          </div>
                           
-                          <Button 
-                            variant="gpt"
-                            size="md"
-                            icon={<CheckCircle size={16} />}
-                            onClick={() => generateFinalConclusion(round.id, ModelProvider.GPT)}
-                            disabled={round.isGptFinalizing}
-                            className="bg-emerald-900/30 text-emerald-400 border border-emerald-900/50 hover:bg-emerald-900/50"
-                          >
-                            {t.gptFinalizeBtn}
-                          </Button>
+                          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto justify-center">
+                             <Button 
+                              variant="gpt"
+                              size="md"
+                              icon={<CheckCircle size={16} />}
+                              onClick={() => generateFinalConclusion(round.id, ModelProvider.GPT)}
+                              disabled={round.isGptFinalizing}
+                              className="bg-emerald-900/30 text-emerald-400 border border-emerald-900/50 hover:bg-emerald-900/50 md:min-w-[180px]"
+                            >
+                              {t.gptFinalizeBtn}
+                            </Button>
 
-                          <Button 
-                            variant="gemini"
-                            size="md"
-                            icon={<Sparkles size={16} />}
-                            onClick={() => generateFinalConclusion(round.id, ModelProvider.GEMINI)}
-                            disabled={round.isGeminiFinalizing}
-                            className="bg-blue-900/30 text-blue-400 border border-blue-900/50 hover:bg-blue-900/50"
-                          >
-                            {t.geminiFinalizeBtn}
-                          </Button>
+                            <Button 
+                              variant="gemini"
+                              size="md"
+                              icon={<Sparkles size={16} />}
+                              onClick={() => generateFinalConclusion(round.id, ModelProvider.GEMINI)}
+                              disabled={round.isGeminiFinalizing}
+                              className="bg-blue-900/30 text-blue-400 border border-blue-900/50 hover:bg-blue-900/50 md:min-w-[180px]"
+                            >
+                              {t.geminiFinalizeBtn}
+                            </Button>
+                          </div>
                         </div>
                       )}
                     </div>
