@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Use the stable model available to public keys
-const GEMINI_MODEL = 'gemini-1.5-flash';
+// Official latest model from docs
+const GEMINI_MODEL = 'gemini-2.5-flash';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Debug Log
@@ -23,29 +23,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    const validHistory = history?.map((msg: any) => ({
+    // Construct the contents array for generateContent
+    // Combine history + current prompt
+    const contents = history?.map((msg: any) => ({
       role: msg.role,
       parts: msg.parts
     })) || [];
 
-    const chat = ai.chats.create({
+    // Add current user prompt
+    contents.push({
+      role: 'user',
+      parts: [{ text: prompt }]
+    });
+
+    // Use models.generateContent as per Gemini 2.5 docs
+    const response = await ai.models.generateContent({
       model: GEMINI_MODEL,
+      contents: contents,
       config: {
         systemInstruction: systemInstruction,
         temperature: 0.7,
-      },
-      history: validHistory
+      }
     });
 
-    const result = await chat.sendMessage({
-      message: prompt
-    });
-
-    return res.status(200).json({ text: result.text });
+    return res.status(200).json({ text: response.text });
 
   } catch (error: any) {
     console.error('Gemini API Error:', error);
-    // Return error message safely
     return res.status(500).json({ 
       error: error.message || 'Unknown Gemini API Error',
       details: JSON.stringify(error)

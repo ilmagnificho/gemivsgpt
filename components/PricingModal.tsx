@@ -24,19 +24,34 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
 
   if (!isOpen) return null;
 
-  const handleJoinWaitlist = (e: React.FormEvent) => {
+  const handleJoinWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
 
     setStatus('loading');
     
-    // Simulate API call
-    setTimeout(() => {
-      setStatus('success');
-      setJoined(true);
-      localStorage.setItem('waitlist_joined', 'true');
-      setEmail('');
-    }, 1500);
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        setJoined(true);
+        localStorage.setItem('waitlist_joined', 'true');
+        setEmail('');
+      } else {
+        console.error('Failed to join waitlist');
+        setStatus('idle');
+      }
+    } catch (error) {
+      console.error('Waitlist API Error:', error);
+      setStatus('idle');
+    }
   };
 
   return (
