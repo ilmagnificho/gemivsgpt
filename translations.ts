@@ -3,10 +3,10 @@ export type Language = 'ko' | 'en' | 'zh' | 'ja';
 
 export const translations = {
   ko: {
-    title: "Gemi vs GPT",
+    title: "GPT vs Gemi",
     subtitle: "AI 교차 검증",
     heroTitle: "더 완벽한 답변을 위한 AI 교차 검증",
-    heroDesc: "Gemini와 GPT의 답변을 동시에 비교하세요.\n상호 검증을 통해 놓친 정보를 찾고 최적의 해답을 제시합니다.",
+    heroDesc: "GPT와 Gemini의 답변을 동시에 비교하세요.\n상호 검증을 통해 놓친 정보를 찾고 최적의 해답을 제시합니다.",
     placeholder: "검증하고 싶은 주제나 질문을 입력하세요...",
     send: "분석 시작",
     reset: "새로운 대화",
@@ -17,7 +17,7 @@ export const translations = {
     critiqueLoading: "답변을 정밀 분석하고 보완점을 찾는 중...",
     geminiCritiqueTitle: "Gemini의 검증 리포트",
     gptCritiqueTitle: "GPT의 검증 리포트",
-    disclaimer: "Gemini는 부정확한 정보를 제공할 수 있습니다. GPT 응답은 시뮬레이션입니다.",
+    disclaimer: "AI는 부정확한 정보를 제공할 수 있습니다. 교차 검증 결과를 참고용으로 활용하세요.",
     pricing: {
       tagline: "Coming Soon",
       title: "더 강력한 교차 검증 경험",
@@ -56,10 +56,10 @@ export const translations = {
     }
   },
   en: {
-    title: "Gemi vs GPT",
+    title: "GPT vs Gemi",
     subtitle: "AI Cross-Check",
     heroTitle: "AI Cross-Verification Platform",
-    heroDesc: "Compare answers from Gemini and GPT simultaneously.\nFind optimal solutions through mutual verification and analysis.",
+    heroDesc: "Compare answers from GPT and Gemini simultaneously.\nFind optimal solutions through mutual verification and analysis.",
     placeholder: "Enter a topic to verify...",
     send: "Analyze",
     reset: "New Chat",
@@ -70,7 +70,7 @@ export const translations = {
     critiqueLoading: "Analyzing answers for improvements...",
     geminiCritiqueTitle: "Gemini's Verification Report",
     gptCritiqueTitle: "GPT's Verification Report",
-    disclaimer: "Gemini may display inaccurate info. GPT response is simulated.",
+    disclaimer: "AI may display inaccurate info. Use cross-check results for reference.",
     pricing: {
       tagline: "Coming Soon",
       title: "Enhanced Cross-Verification",
@@ -109,10 +109,10 @@ export const translations = {
     }
   },
   zh: {
-    title: "Gemi vs GPT",
+    title: "GPT vs Gemi",
     subtitle: "AI 交叉验证",
     heroTitle: "AI 智能交叉验证平台",
-    heroDesc: "同时比较 Gemini 和 GPT 的答案。\n通过相互验证发现遗漏信息并提供最佳解决方案。",
+    heroDesc: "同时比较 GPT 和 Gemini 的答案。\n通过相互验证发现遗漏信息并提供最佳解决方案。",
     placeholder: "输入想要验证的主题...",
     send: "开始分析",
     reset: "新对话",
@@ -123,7 +123,7 @@ export const translations = {
     critiqueLoading: "正在分析答案并寻找改进点...",
     geminiCritiqueTitle: "Gemini 验证报告",
     gptCritiqueTitle: "GPT 验证报告",
-    disclaimer: "Gemini 可能会提供不准确的信息。GPT 响应是模拟的。",
+    disclaimer: "AI 可能会提供不准确的信息。交叉验证结果仅供参考。",
     pricing: {
       tagline: "Coming Soon",
       title: "更强大的交叉验证体验",
@@ -162,10 +162,10 @@ export const translations = {
     }
   },
   ja: {
-    title: "Gemi vs GPT",
+    title: "GPT vs Gemi",
     subtitle: "AI クロスチェック",
     heroTitle: "より完璧な回答のためのAI相互検証",
-    heroDesc: "GeminiとGPTの回答を同時に比較しましょう。\n相互検証を通じて最適な解を見つけ出します。",
+    heroDesc: "GPTとGeminiの回答を同時に比較しましょう。\n相互検証を通じて最適な解を見つけ出します。",
     placeholder: "検証したいテーマや質問を入力...",
     send: "分析開始",
     reset: "新しい対話",
@@ -176,7 +176,7 @@ export const translations = {
     critiqueLoading: "回答を精密分析し、改善点を探しています...",
     geminiCritiqueTitle: "Geminiによる検証レポート",
     gptCritiqueTitle: "GPTによる検証レポート",
-    disclaimer: "Geminiは不正確な情報を表示する可能性があります。GPTの応答はシミュレーションです。",
+    disclaimer: "AIは不正確な情報を表示する可能性があります。検証結果は参考としてご活用ください。",
     pricing: {
       tagline: "Coming Soon",
       title: "より強力なクロスチェック体験",

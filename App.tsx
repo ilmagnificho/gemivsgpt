@@ -13,7 +13,7 @@ import { translations, Language } from './translations';
 
 // Custom Icons for better brand recognition
 const GeminiLogo = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg" shapeRendering="geometricPrecision">
     <path d="M16 3C16 3 17 9 21 12C17 15 16 21 16 21C16 21 15 15 11 12C15 9 16 3 16 3Z" fill="url(#gemini-gradient-1)" />
     <path d="M8 8C8 8 8.5 11 10.5 12.5C8.5 14 8 17 8 17C8 17 7.5 14 5.5 12.5C7.5 11 8 8 8 8Z" fill="url(#gemini-gradient-2)" opacity="0.8" />
     <defs>
@@ -30,9 +30,13 @@ const GeminiLogo = ({ className }: { className?: string }) => (
 );
 
 const GPTLogo = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M20.2 12.0001C20.2 11.2376 20.0625 10.5126 19.8125 9.83762C20.6625 9.11262 21.2 8.01262 21.2 6.80012C21.2 4.47512 19.325 2.60012 17 2.60012C15.825 2.60012 14.775 3.08762 14 3.86262C13.2375 2.91262 12.1 2.30012 10.825 2.22512C10.7 2.21262 10.5875 2.20012 10.45 2.20012C7.9625 2.20012 5.95 4.21262 5.95 6.70012C5.95 6.78762 5.95 6.86262 5.9625 6.95012C4.525 7.15012 3.325 8.08762 2.725 9.38762C1.65 9.81262 0.9 10.8626 0.9 12.1001C0.9 13.8251 2.1 15.2626 3.7125 15.6126C3.7 15.7376 3.7 15.8751 3.7 16.0001C3.7 18.5251 5.75 20.5751 8.275 20.5751C9.625 20.5751 10.8375 19.9626 11.6625 19.0126C12.35 19.7876 13.35 20.2751 14.4625 20.4001L14.725 20.4126C17.1875 20.4126 19.2 18.4251 19.2 15.9626C19.2 15.8251 19.1875 15.6876 19.1625 15.5501C20.5875 15.3126 21.7625 14.3376 22.3375 13.0126C23.1125 11.4376 22.1875 9.61262 20.2 12.0001ZM11.1625 17.5126C9.9 17.5126 8.875 16.4876 8.875 15.2251C8.875 15.0501 8.9 14.8876 8.9375 14.7251L9.6125 12.6376L8.0375 13.3876C7.0375 13.8626 5.8375 13.4376 5.3625 12.4376C4.8875 11.4376 5.3125 10.2376 6.3125 9.76262L10.05 8.00012L9.4125 5.51262C9.1375 4.43762 9.7875 3.35012 10.8625 3.07512C11.9375 2.80012 13.025 3.45012 13.3 4.52512L13.975 7.15012L15.9 5.48762C16.75 4.76262 18.0125 4.86262 18.7375 5.71262C19.4625 6.56262 19.3625 7.82512 18.5125 8.55012L15.8625 10.8376L18.3375 10.5126C19.4375 10.3626 20.45 11.1251 20.6 12.2251C20.75 13.3251 19.9875 14.3376 18.8875 14.4876L15.1125 15.0001L15.7 17.3626C15.9625 18.4126 15.3375 19.4876 14.2875 19.7501C13.2375 20.0126 12.1625 19.3876 11.9 18.3376L11.1625 17.5126Z"/>
-    <path d="M11.9625 13.5251C12.8047 13.5251 13.4875 12.8423 13.4875 12.0001C13.4875 11.1579 12.8047 10.4751 11.9625 10.4751C11.1204 10.4751 10.4375 11.1579 10.4375 12.0001C10.4375 12.8423 11.1204 13.5251 11.9625 13.5251Z" />
+  <svg 
+    viewBox="0 0 24 24" 
+    className={className} 
+    fill="currentColor" 
+    xmlns="http://www.w3.org/2000/svg" 
+  >
+    <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.3829a.7911.7911 0 0 0-.785-.0001l-5.8429 3.3685v-2.3324a.071.071 0 0 1 .0332-.0615l4.8303-2.7914a4.4944 4.4944 0 0 1 6.1408 1.6464 4.4709 4.4709 0 0 1 .5346 3.0137zm2.0738-1.752a4.485 4.485 0 0 1-2.3655 1.9728v-5.6766a.7664.7664 0 0 0-.3879-.6765L12.4432 2.27l2.0201-1.1685a.0757.0757 0 0 1 .071 0l4.8303 2.7865a4.504 4.504 0 0 1 1.6465 4.113zm-9.1507-1.1444l4.5324 2.6105a.1054.1054 0 0 1 .019.1437L9.4357 18.8285a.1101.1101 0 0 1-.1419.019l-4.5324-2.6105a.1054.1054 0 0 1-.019-.1437l6.9741-11.9734a.1101.1101 0 0 1 .1419-.019z"/>
   </svg>
 );
 
@@ -237,13 +241,13 @@ export default function App() {
       <header className={`flex items-center justify-between px-6 py-5 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-500 ${!hasStarted ? 'border-transparent bg-transparent' : ''}`}>
         <div className="flex items-center space-x-4 group cursor-default">
           <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-emerald-600/20 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+            <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 to-blue-600/20 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
             <div className="relative bg-zinc-900 p-2 rounded-lg border border-zinc-800">
                <GitCompare size={24} className="text-zinc-200 transform group-hover:rotate-180 transition-transform duration-500" />
             </div>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
-            <span className="text-blue-500/90">Gemi</span> <span className="text-zinc-600 mx-0.5 font-light">vs</span> <span className="text-emerald-500/90">GPT</span>
+            <span className="text-emerald-500/90">GPT</span> <span className="text-zinc-600 mx-0.5 font-light">vs</span> <span className="text-blue-500/90">Gemi</span>
           </h1>
         </div>
 
@@ -293,6 +297,26 @@ export default function App() {
             <div className="text-center space-y-6">
               
               <div className="flex justify-center items-center space-x-6 md:space-x-12 mb-8">
+                 {/* GPT Avatar - OFFICIAL LOOK (White Icon on Green Background) */}
+                 <div className="flex flex-col items-center space-y-3">
+                     <div className="relative group">
+                        <div className="absolute -inset-4 bg-gradient-to-br from-emerald-400/50 to-emerald-600/50 rounded-full blur-xl opacity-50 group-hover:opacity-80 transition duration-700"></div>
+                        <div className="relative w-24 h-24 rounded-3xl bg-emerald-600 flex items-center justify-center shadow-2xl backdrop-blur-sm group-hover:scale-105 transition-transform duration-500">
+                             <GPTLogo className="w-12 h-12 text-white" />
+                        </div>
+                     </div>
+                     <div className="flex flex-col items-center mt-2">
+                        <span className="text-lg font-bold text-zinc-200 tracking-wide">ChatGPT</span>
+                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-900/10 px-2 py-0.5 rounded border border-emerald-900/20 mt-1">
+                           gpt-4o
+                        </span>
+                     </div>
+                 </div>
+
+                 <div className="flex flex-col items-center text-zinc-600 pb-10 px-4">
+                    <span className="text-2xl font-light italic text-zinc-700">VS</span>
+                 </div>
+
                  {/* Gemini Avatar */}
                  <div className="flex flex-col items-center space-y-3">
                      <div className="relative group">
@@ -308,26 +332,6 @@ export default function App() {
                         </span>
                      </div>
                  </div>
-
-                 <div className="flex flex-col items-center text-zinc-600 pb-10 px-4">
-                    <span className="text-2xl font-light italic text-zinc-700">VS</span>
-                 </div>
-
-                 {/* GPT Avatar */}
-                 <div className="flex flex-col items-center space-y-3">
-                     <div className="relative group">
-                        <div className="absolute -inset-4 bg-gradient-to-br from-emerald-500/30 to-teal-500/30 rounded-full blur-xl opacity-50 group-hover:opacity-80 transition duration-700"></div>
-                        <div className="relative w-24 h-24 rounded-3xl bg-zinc-900 border border-zinc-800/80 flex items-center justify-center shadow-2xl backdrop-blur-sm group-hover:scale-105 transition-transform duration-500">
-                             <GPTLogo className="w-12 h-12 text-emerald-500" />
-                        </div>
-                     </div>
-                     <div className="flex flex-col items-center mt-2">
-                        <span className="text-lg font-bold text-zinc-200 tracking-wide">ChatGPT</span>
-                        <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-900/10 px-2 py-0.5 rounded border border-emerald-900/20 mt-1">
-                           gpt-4o
-                        </span>
-                     </div>
-                 </div>
               </div>
 
               <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
@@ -340,7 +344,7 @@ export default function App() {
 
             {/* Centered Input */}
             <div className="w-full relative group max-w-2xl">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-1000 blur-lg"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-1000 blur-lg"></div>
               <div className="relative bg-zinc-900/80 backdrop-blur-xl rounded-2xl flex items-center p-2 shadow-2xl border border-zinc-800 group-hover:border-zinc-700 transition-colors">
                 <textarea
                   value={input}
@@ -373,21 +377,6 @@ export default function App() {
 
                 {/* ORIGINAL RESPONSES */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
-                  {/* Gemini Column */}
-                  <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-3 px-2">
-                      <div className="flex items-center space-x-2">
-                         <GeminiLogo className="w-4 h-4" />
-                         <span className="text-xs font-bold text-zinc-400 tracking-widest uppercase">{t.geminiName}</span>
-                      </div>
-                    </div>
-                    <ChatBubble 
-                      content={round.geminiResponse || ""} 
-                      provider={ModelProvider.GEMINI} 
-                      isLoading={round.isGeminiLoading}
-                    />
-                  </div>
-
                   {/* GPT Column */}
                   <div className="flex flex-col h-full">
                     <div className="flex items-center justify-between mb-3 px-2">
@@ -400,6 +389,21 @@ export default function App() {
                       content={round.gptResponse || ""} 
                       provider={ModelProvider.GPT} 
                       isLoading={round.isGptLoading}
+                    />
+                  </div>
+
+                  {/* Gemini Column */}
+                  <div className="flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-3 px-2">
+                      <div className="flex items-center space-x-2">
+                         <GeminiLogo className="w-4 h-4" />
+                         <span className="text-xs font-bold text-zinc-400 tracking-widest uppercase">{t.geminiName}</span>
+                      </div>
+                    </div>
+                    <ChatBubble 
+                      content={round.geminiResponse || ""} 
+                      provider={ModelProvider.GEMINI} 
+                      isLoading={round.isGeminiLoading}
                     />
                   </div>
                 </div>
@@ -418,18 +422,7 @@ export default function App() {
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Gemini Critique of GPT */}
-                        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
-                            <div className="flex items-center space-x-2 mb-4 text-blue-400/80 border-b border-zinc-800 pb-2">
-                              <GeminiLogo className="w-4 h-4" />
-                              <span className="text-xs font-bold uppercase tracking-wider">{t.geminiCritiqueTitle}</span>
-                            </div>
-                            <div className="text-zinc-300 text-sm leading-relaxed opacity-90">
-                              <ReactMarkdown>{critique.geminiContent}</ReactMarkdown>
-                            </div>
-                        </div>
-
-                        {/* GPT Critique of Gemini */}
+                        {/* GPT Critique of Gemini (Left) */}
                         <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
                             <div className="flex items-center space-x-2 mb-4 text-emerald-400/80 border-b border-zinc-800 pb-2">
                               <GPTLogo className="w-4 h-4 text-emerald-500" />
@@ -437,6 +430,17 @@ export default function App() {
                             </div>
                             <div className="text-zinc-300 text-sm leading-relaxed opacity-90">
                               <ReactMarkdown>{critique.gptContent}</ReactMarkdown>
+                            </div>
+                        </div>
+
+                        {/* Gemini Critique of GPT (Right) */}
+                        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
+                            <div className="flex items-center space-x-2 mb-4 text-blue-400/80 border-b border-zinc-800 pb-2">
+                              <GeminiLogo className="w-4 h-4" />
+                              <span className="text-xs font-bold uppercase tracking-wider">{t.geminiCritiqueTitle}</span>
+                            </div>
+                            <div className="text-zinc-300 text-sm leading-relaxed opacity-90">
+                              <ReactMarkdown>{critique.geminiContent}</ReactMarkdown>
                             </div>
                         </div>
                      </div>
