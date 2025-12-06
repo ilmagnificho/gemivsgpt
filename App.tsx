@@ -9,6 +9,7 @@ import { Button } from './components/Button';
 import { ChatBubble } from './components/ChatBubble';
 import { AdModal } from './components/AdModal';
 import { PricingModal } from './components/PricingModal';
+import { FinalConclusionModal } from './components/FinalConclusionModal';
 import { translations, Language } from './translations';
 
 // Custom Icons for better brand recognition
@@ -44,12 +45,23 @@ export default function App() {
   const [input, setInput] = useState('');
   const [rounds, setRounds] = useState<ConversationRound[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [lang, setLang] = useState<Language>('en'); // Default fallback
+  const [lang, setLang] = useState<Language>('en'); 
   
   // Ad & Premium State
   const [showAdModal, setShowAdModal] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
+  
+  // Pending Actions (waiting for ad)
   const [pendingCritiqueRoundId, setPendingCritiqueRoundId] = useState<string | null>(null);
+  const [pendingFinalize, setPendingFinalize] = useState<{ roundId: string, provider: ModelProvider } | null>(null);
+  
+  // Final Conclusion Modal
+  const [finalModalState, setFinalModalState] = useState<{
+    isOpen: boolean;
+    content: string;
+    provider: ModelProvider;
+    title: string;
+  }>({ isOpen: false, content: '', provider: ModelProvider.GPT, title: '' });
   
   // TODO: Connect this to actual auth/user state later
   const [isPremium, setIsPremium] = useState(false); 
@@ -67,8 +79,6 @@ export default function App() {
   }, []);
 
   const t = translations[lang];
-  
-  // Track if conversation has started to switch views
   const hasStarted = rounds.length > 0;
 
   const scrollToBottom = () => {
@@ -89,7 +99,6 @@ export default function App() {
       if (targetRoundId && round.id === targetRoundId) break;
       history.push({ role: 'user', parts: [{ text: round.userPrompt }] });
       
-      // Add synthesis of context implicitly by adding the primary answers
       if (round.geminiResponse) {
          history.push({ role: 'model', parts: [{ text: round.geminiResponse }] });
       }
@@ -120,15 +129,12 @@ export default function App() {
 
     const history = getHistoryForContext();
 
-    // Trigger both APIs
-    // Gemini
     callGeminiAPI(currentInput, history).then(response => {
       setRounds(prev => prev.map(r => 
         r.id === newRoundId ? { ...r, geminiResponse: response, isGeminiLoading: false } : r
       ));
     });
 
-    // GPT (Real API)
     callOpenAIAPI(currentInput).then(response => {
       setRounds(prev => prev.map(r => 
         r.id === newRoundId ? { ...r, gptResponse: response, isGptLoading: false } : r
@@ -140,11 +146,11 @@ export default function App() {
     }, 1500);
   };
 
-  // Triggered when user clicks "Cross-Check"
+  // Critique Flow
   const initiateCritique = (roundId: string) => {
     setPendingCritiqueRoundId(roundId);
+    setPendingFinalize(null);
     
-    // If user is Premium, skip Ad
     if (isPremium) {
       executeCritique(roundId);
     } else {
@@ -152,9 +158,29 @@ export default function App() {
     }
   };
 
-  // Triggered after Ad is "watched" or if Premium
-  const executeCritique = async (directRoundId?: string) => {
+  // Finalize Flow
+  const initiateFinalize = (roundId: string, provider: ModelProvider) => {
+    setPendingFinalize({ roundId, provider });
+    setPendingCritiqueRoundId(null);
+
+    if (isPremium) {
+       executeFinalize(roundId, provider);
+    } else {
+       setShowAdModal(true);
+    }
+  };
+
+  // Called when ad is finished
+  const handleAdComplete = () => {
     setShowAdModal(false);
+    if (pendingCritiqueRoundId) {
+      executeCritique(pendingCritiqueRoundId);
+    } else if (pendingFinalize) {
+      executeFinalize(pendingFinalize.roundId, pendingFinalize.provider);
+    }
+  };
+
+  const executeCritique = async (directRoundId?: string) => {
     const roundId = directRoundId || pendingCritiqueRoundId;
     if (!roundId) return;
 
@@ -163,7 +189,6 @@ export default function App() {
 
     setRounds(prev => prev.map(r => r.id === roundId ? { ...r, isCritiqueLoading: true } : r));
 
-    // Construct context including previous critiques
     let previousCritiquesContext = "";
     if (round.critiques.length > 0) {
       previousCritiquesContext = "\n[이전 검증 기록]\n" + round.critiques.map((c, i) => 
@@ -173,7 +198,6 @@ export default function App() {
 
     const isReverify = round.critiques.length > 0;
     
-    // 1. Gemini Critiques GPT
     const geminiCritiquePrompt = `
     [시스템 지시]
     당신은 꼼꼼하고 객관적인 AI 검토자입니다. 
@@ -192,7 +216,6 @@ export default function App() {
 
     const geminiPromise = callGeminiAPI(geminiCritiquePrompt, getHistoryForContext(roundId));
 
-    // 2. GPT Critiques Gemini
     const gptPromise = callOpenAICritique(
       round.geminiResponse, 
       round.userPrompt + (previousCritiquesContext ? " REVERIFY" : "")
@@ -216,18 +239,16 @@ export default function App() {
     setPendingCritiqueRoundId(null);
   };
 
-  const generateFinalConclusion = async (roundId: string, provider: ModelProvider) => {
+  const executeFinalize = async (roundId: string, provider: ModelProvider) => {
     const round = rounds.find(r => r.id === roundId);
     if (!round || !round.gptResponse || !round.geminiResponse) return;
 
-    // Set loading state
     setRounds(prev => prev.map(r => r.id === roundId ? { 
       ...r, 
       isGptFinalizing: provider === ModelProvider.GPT ? true : r.isGptFinalizing,
       isGeminiFinalizing: provider === ModelProvider.GEMINI ? true : r.isGeminiFinalizing
     } : r));
 
-    // Construct Synthesis Prompt
     const synthesisPrompt = `
     [시스템 지시]
     당신은 최상의 답변을 도출하는 최종 결정자입니다.
@@ -257,10 +278,10 @@ export default function App() {
       if (provider === ModelProvider.GEMINI) {
         finalResult = await callGeminiAPI(synthesisPrompt, getHistoryForContext(roundId));
       } else {
-        // Reuse OpenAI Chat but with synthesis prompt
         finalResult = await callOpenAIAPI(synthesisPrompt); 
       }
 
+      // Update round data AND open modal
       setRounds(prev => prev.map(r => r.id === roundId ? { 
         ...r, 
         gptFinalConclusion: provider === ModelProvider.GPT ? finalResult : r.gptFinalConclusion,
@@ -268,6 +289,13 @@ export default function App() {
         isGptFinalizing: provider === ModelProvider.GPT ? false : r.isGptFinalizing,
         isGeminiFinalizing: provider === ModelProvider.GEMINI ? false : r.isGeminiFinalizing
       } : r));
+
+      setFinalModalState({
+        isOpen: true,
+        content: finalResult,
+        provider: provider,
+        title: provider === ModelProvider.GPT ? t.gptFinalTitle : t.geminiFinalTitle
+      });
 
     } catch (e) {
       console.error("Finalization failed", e);
@@ -277,6 +305,7 @@ export default function App() {
         isGeminiFinalizing: false
       } : r));
     }
+    setPendingFinalize(null);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -288,10 +317,12 @@ export default function App() {
 
   return (
     <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-zinc-700/50">
+      
+      {/* Modals */}
       <AdModal 
         isOpen={showAdModal} 
         onClose={() => setShowAdModal(false)} 
-        onAdComplete={() => executeCritique()}
+        onAdComplete={handleAdComplete}
         onGoPremium={() => {
           setShowAdModal(false);
           setShowPricingModal(true);
@@ -302,6 +333,14 @@ export default function App() {
         isOpen={showPricingModal}
         onClose={() => setShowPricingModal(false)}
         lang={lang}
+      />
+
+      <FinalConclusionModal 
+        isOpen={finalModalState.isOpen}
+        onClose={() => setFinalModalState(prev => ({ ...prev, isOpen: false }))}
+        content={finalModalState.content}
+        provider={finalModalState.provider}
+        title={finalModalState.title}
       />
 
       {/* Header */}
@@ -364,7 +403,7 @@ export default function App() {
             <div className="text-center space-y-6">
               
               <div className="flex justify-center items-center space-x-6 md:space-x-12 mb-8">
-                 {/* GPT Avatar - OFFICIAL LOOK (White Icon on Green Background) */}
+                 {/* GPT Avatar */}
                  <div className="flex flex-col items-center space-y-3">
                      <div className="relative group">
                         <div className="absolute -inset-4 bg-gradient-to-br from-emerald-400/50 to-emerald-600/50 rounded-full blur-xl opacity-50 group-hover:opacity-80 transition duration-700"></div>
@@ -475,10 +514,9 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* CRITIQUE THREADS - Stacks vertically */}
+                {/* CRITIQUE THREADS */}
                 {round.critiques.map((critique, index) => (
                   <div key={critique.id} className="animate-fade-in-up mt-8 relative">
-                     {/* Thread Connector Line */}
                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-800 border border-zinc-600 z-10"></div>
                      
@@ -489,7 +527,6 @@ export default function App() {
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* GPT Critique of Gemini (Left) */}
                         <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
                             <div className="flex items-center space-x-2 mb-4 text-emerald-400/80 border-b border-zinc-800 pb-2">
                               <GPTLogo className="w-4 h-4 text-emerald-500" />
@@ -500,7 +537,6 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Gemini Critique of GPT (Right) */}
                         <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
                             <div className="flex items-center space-x-2 mb-4 text-blue-400/80 border-b border-zinc-800 pb-2">
                               <GeminiLogo className="w-4 h-4" />
@@ -514,8 +550,8 @@ export default function App() {
                   </div>
                 ))}
                 
-                {/* FINAL CONCLUSIONS (If Generated) */}
-                {(round.gptFinalConclusion || round.geminiFinalConclusion || round.isGptFinalizing || round.isGeminiFinalizing) && (
+                {/* Final Conclusion Inline Preview (Still useful as history) */}
+                {(round.gptFinalConclusion || round.geminiFinalConclusion) && (
                    <div className="mt-12 animate-fade-in-up">
                       <div className="flex items-center justify-center mb-6">
                          <div className="h-px w-full max-w-[100px] bg-zinc-800"></div>
@@ -526,52 +562,38 @@ export default function App() {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {/* GPT Final */}
-                          {(round.gptFinalConclusion || round.isGptFinalizing) && (
-                            <div className="relative">
-                               <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 rounded-2xl blur opacity-50"></div>
-                               <div className="relative bg-zinc-900 border border-emerald-500/30 rounded-2xl p-6 shadow-xl">
+                          {round.gptFinalConclusion && (
+                            <div className="relative group cursor-pointer" onClick={() => setFinalModalState({ isOpen: true, content: round.gptFinalConclusion!, provider: ModelProvider.GPT, title: t.gptFinalTitle })}>
+                               <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
+                               <div className="relative bg-zinc-900 border border-emerald-500/30 rounded-2xl p-6 shadow-xl hover:border-emerald-500/50 transition-colors">
                                   <div className="flex items-center gap-3 mb-4 border-b border-zinc-800 pb-3">
                                      <div className="p-1.5 bg-emerald-500/10 rounded-lg">
                                        <CheckCircle size={18} className="text-emerald-500" />
                                      </div>
                                      <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">{t.gptFinalTitle}</h3>
                                   </div>
-                                  
-                                  {round.isGptFinalizing ? (
-                                    <div className="flex items-center gap-2 text-zinc-500 text-sm py-4 animate-pulse">
-                                       <RefreshCw size={14} className="animate-spin"/> {t.finalizingLoading}
-                                    </div>
-                                  ) : (
-                                    <div className="prose prose-invert prose-sm max-w-none text-zinc-300">
-                                      <ReactMarkdown>{round.gptFinalConclusion || ""}</ReactMarkdown>
-                                    </div>
-                                  )}
+                                  <div className="line-clamp-6 text-zinc-400 text-sm">
+                                      <ReactMarkdown>{round.gptFinalConclusion}</ReactMarkdown>
+                                  </div>
+                                  <div className="mt-4 text-center text-xs text-emerald-500/70 font-medium">Click to view full screen</div>
                                </div>
                             </div>
                           )}
 
-                          {/* Gemini Final */}
-                          {(round.geminiFinalConclusion || round.isGeminiFinalizing) && (
-                            <div className="relative">
-                               <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600/20 to-blue-900/20 rounded-2xl blur opacity-50"></div>
-                               <div className="relative bg-zinc-900 border border-blue-500/30 rounded-2xl p-6 shadow-xl">
+                          {round.geminiFinalConclusion && (
+                            <div className="relative group cursor-pointer" onClick={() => setFinalModalState({ isOpen: true, content: round.geminiFinalConclusion!, provider: ModelProvider.GEMINI, title: t.geminiFinalTitle })}>
+                               <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600/20 to-blue-900/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
+                               <div className="relative bg-zinc-900 border border-blue-500/30 rounded-2xl p-6 shadow-xl hover:border-blue-500/50 transition-colors">
                                   <div className="flex items-center gap-3 mb-4 border-b border-zinc-800 pb-3">
                                      <div className="p-1.5 bg-blue-500/10 rounded-lg">
                                        <Sparkles size={18} className="text-blue-500" />
                                      </div>
                                      <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider">{t.geminiFinalTitle}</h3>
                                   </div>
-                                  
-                                  {round.isGeminiFinalizing ? (
-                                    <div className="flex items-center gap-2 text-zinc-500 text-sm py-4 animate-pulse">
-                                       <RefreshCw size={14} className="animate-spin"/> {t.finalizingLoading}
-                                    </div>
-                                  ) : (
-                                    <div className="prose prose-invert prose-sm max-w-none text-zinc-300">
-                                      <ReactMarkdown>{round.geminiFinalConclusion || ""}</ReactMarkdown>
-                                    </div>
-                                  )}
+                                  <div className="line-clamp-6 text-zinc-400 text-sm">
+                                      <ReactMarkdown>{round.geminiFinalConclusion}</ReactMarkdown>
+                                  </div>
+                                  <div className="mt-4 text-center text-xs text-blue-500/70 font-medium">Click to view full screen</div>
                                </div>
                             </div>
                           )}
@@ -579,22 +601,23 @@ export default function App() {
                    </div>
                 )}
 
-                {/* Loading State for New Critique */}
-                {round.isCritiqueLoading && (
+                {/* Loading State */}
+                {(round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing) && (
                    <div className="mt-8 relative animate-fade-in-up">
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
                       <div className="flex justify-center text-zinc-400 text-sm animate-pulse space-x-3 items-center bg-zinc-900 py-3 px-6 rounded-full w-fit mx-auto border border-zinc-800">
                           <RefreshCw className="animate-spin text-zinc-500" size={16}/>
-                          <span className="font-medium text-zinc-400">{t.critiqueLoading}</span>
+                          <span className="font-medium text-zinc-400">
+                            {round.isCritiqueLoading ? t.critiqueLoading : t.finalizingLoading}
+                          </span>
                       </div>
                    </div>
                 )}
 
-                {/* Actions - Always at the bottom of the thread */}
+                {/* Actions */}
                 {!round.isGeminiLoading && !round.isGptLoading && (
                     <div className="flex flex-col items-center gap-6 mt-12 mb-4 relative z-20 pb-8">
                       
-                      {/* Critique Button */}
                       <div className="flex justify-center">
                         <Button 
                           variant="secondary" 
@@ -608,7 +631,6 @@ export default function App() {
                         </Button>
                       </div>
 
-                      {/* Finalize Buttons - Only Show if critiques exist */}
                       {round.critiques && round.critiques.length > 0 && (
                         <div className="w-full max-w-2xl bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 animate-fade-in-up flex flex-col items-center">
                           <div className="flex flex-col items-center mb-4 text-center">
@@ -621,7 +643,7 @@ export default function App() {
                               variant="gpt"
                               size="md"
                               icon={<CheckCircle size={16} />}
-                              onClick={() => generateFinalConclusion(round.id, ModelProvider.GPT)}
+                              onClick={() => initiateFinalize(round.id, ModelProvider.GPT)}
                               disabled={round.isGptFinalizing}
                               className="bg-emerald-900/30 text-emerald-400 border border-emerald-900/50 hover:bg-emerald-900/50 md:min-w-[180px]"
                             >
@@ -632,7 +654,7 @@ export default function App() {
                               variant="gemini"
                               size="md"
                               icon={<Sparkles size={16} />}
-                              onClick={() => generateFinalConclusion(round.id, ModelProvider.GEMINI)}
+                              onClick={() => initiateFinalize(round.id, ModelProvider.GEMINI)}
                               disabled={round.isGeminiFinalizing}
                               className="bg-blue-900/30 text-blue-400 border border-blue-900/50 hover:bg-blue-900/50 md:min-w-[180px]"
                             >
