@@ -1,0 +1,5 @@
+{
+  "name": "Gemi vs GPT",
+  "description": "Gemini와 GPT의 답변을 동시에 비교하고, 상호 비판 및 종합을 통해 최적의 답변을 도출하는 교차 검증 플랫폼입니다.",
+  "requestFramePermissions": []
+}
