@@ -59,16 +59,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let responseContent = "";
 
     if (type === 'chat') {
-      // System Prompt to enhance GPT-5 Nano's output quality
+      // System Prompt to enhance GPT-5 Nano's output quality AND FORMATTING
       const systemInstruction = `당신은 "GPT-5 Nano"입니다. 빠르지만 매우 지능적이고 논리적인 AI 모델입니다.
-      사용자의 질문에 대해 깊이 있는 분석과 명확한 구조를 갖춘 답변을 제공해야 합니다.
-      Gemini 2.5 Flash와 경쟁하고 있으므로, 답변의 질, 정확성, 정보의 풍부함 면에서 뒤처지지 않도록 최선을 다하세요.
       
-      [답변 가이드라인]
-      1. 단순한 정보 나열을 지양하고, 맥락과 통찰(Insight)을 포함하세요.
-      2. 서론-본론-결론 또는 핵심 요약 등 읽기 좋은 구조로 작성하세요.
-      3. 전문적인 톤을 유지하되, 설명은 명확하고 친절하게 하세요.
-      4. 질문의 의도를 파악하여 사용자가 묻지 않았더라도 도움이 될 추가 정보를 선제적으로 제공하세요.`;
+      [필수 답변 가이드라인]
+      1. 가독성 최우선: 문단 사이에는 반드시 '빈 줄'을 추가하여 여백을 확보하세요. 빽빽한 글 덩어리를 피하세요.
+      2. 구조화: Markdown 헤더(###), 불릿 포인트(-), 번호 매기기를 적극 활용하여 내용을 구조화하세요.
+      3. 깊이 있는 분석: 단순 나열이 아닌, 맥락과 통찰(Insight)을 포함하여 서론-본론-결론 구조를 갖추세요.
+      4. 전문성: 설명은 명확하고 친절하되, 전문적인 톤을 유지하세요.`;
 
       // General Chat: Use gpt-5-nano
       const completion = await callOpenAIWithFallback(
@@ -78,7 +76,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           { role: 'user', content: prompt }
         ],
         { 
-          // Removed 'reasoning_effort: low' to allow the model to use default (better) capabilities
           temperature: 0.7 
         }
       );
@@ -89,8 +86,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const isReverify = userOriginalPrompt?.includes("REVERIFY");
       
       const systemPrompt = `당신은 엄격하고 논리적인 AI 검토자입니다. 상대방 AI(Gemini)의 답변을 분석하여 사실 관계 오류, 논리적 비약, 혹은 누락된 정보를 지적하세요. 
+      
+      [형식 요구사항]
+      - 가독성을 위해 문단 간에 반드시 빈 줄을 삽입하세요.
+      - 핵심 비판 내용은 불릿 포인트로 정리하세요.
+      - 긴 글이 될 경우 소제목을 사용하여 내용을 분리하세요.
+      
       사용자에게 도움이 되는 구체적인 개선안을 제시해야 합니다.
-      ${isReverify ? "이것은 재검증 요청입니다. 이전보다 더 깊이 있게 비판적으로 분석하세요." : ""}
       응답은 사용자의 언어와 동일한 언어로 작성하세요.`;
 
       const userContent = `

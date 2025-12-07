@@ -25,6 +25,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ content, provider, isLoa
 
   // Common Styles for Markdown Content
   // Optimized for readability: Larger font, wider line-height, distinct headers
+  // Added whitespace-pre-wrap to respect newlines from API
   const markdownStyles = `
     prose prose-invert max-w-none
     prose-p:text-[16px] md:prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-zinc-300 prose-p:mb-6
@@ -32,7 +33,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ content, provider, isLoa
     prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg
     prose-strong:text-white prose-strong:font-extrabold prose-strong:bg-white/5 prose-strong:px-1 prose-strong:rounded
     prose-ul:my-6 prose-ul:list-disc prose-ul:pl-6
-    prose-li:text-zinc-300 prose-li:mb-2 prose-li:marker:text-zinc-500
+    prose-ol:my-6 prose-ol:list-decimal prose-ol:pl-6
+    prose-li:text-zinc-300 prose-li:mb-2 prose-li:marker:text-zinc-500 prose-li:leading-[1.8]
     prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-emerald-300 prose-code:font-mono prose-code:text-sm
     prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 prose-pre:p-5 prose-pre:rounded-xl prose-pre:shadow-inner prose-pre:my-6
     prose-blockquote:border-l-4 prose-blockquote:border-zinc-700 prose-blockquote:bg-zinc-900/30 prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:text-zinc-400 prose-blockquote:italic

@@ -36,12 +36,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       parts: [{ text: prompt }]
     });
 
+    // Enhance System Instruction for Readability
+    const enhancedSystemInstruction = systemInstruction 
+      ? systemInstruction 
+      : `당신은 Gemini 2.5 Flash입니다. 
+         [형식 가이드]
+         1. 가독성을 위해 모든 문단 사이에는 빈 줄을 두어 여백을 만드세요.
+         2. 중요한 내용은 Markdown 불릿 포인트나 숫자로 구조화하세요.
+         3. 텍스트가 뭉쳐 보이지 않도록 줄바꿈을 적극 활용하세요.`;
+
     // Use models.generateContent as per Gemini 2.5 docs
     const response = await ai.models.generateContent({
       model: GEMINI_MODEL,
       contents: contents,
       config: {
-        systemInstruction: systemInstruction,
+        systemInstruction: enhancedSystemInstruction,
         temperature: 0.7,
       }
     });
