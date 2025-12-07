@@ -1,4 +1,6 @@
 
+
+
 export type Language = 'ko' | 'en' | 'zh' | 'ja';
 
 export const translations = {
@@ -25,10 +27,13 @@ export const translations = {
     geminiFinalTitle: "Gemini의 최종 결론",
     gptFinalTitle: "GPT-5 Nano의 최종 결론",
     disclaimer: "AI는 부정확한 정보를 제공할 수 있습니다. 교차 검증 결과를 참고용으로 활용하세요.",
+    coupangDisclaimer: "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
     adModal: {
       removeAds: "광고 없이 검증하기",
       waitingBored: "기다리기 지루하신가요?",
-      goPremium: "Pro 대기 명단 등록하고 광고 제거 >"
+      goPremium: "Pro 대기 명단 등록하고 광고 제거 >",
+      aiRecommend: "광고 • AI 맞춤 추천",
+      analyzing: "AI가 관련 상품을 찾고 있습니다..."
     },
     pricing: {
       tagline: "Coming Soon",
@@ -90,10 +95,13 @@ export const translations = {
     geminiFinalTitle: "Gemini's Final Conclusion",
     gptFinalTitle: "GPT-5 Nano's Final Conclusion",
     disclaimer: "AI may display inaccurate info. Use cross-check results for reference.",
+    coupangDisclaimer: "This post is part of Coupang Partners activity, and a fee is received accordingly.",
     adModal: {
       removeAds: "Verify without Ads",
       waitingBored: "Tired of waiting?",
-      goPremium: "Join Pro Waitlist to Remove Ads >"
+      goPremium: "Join Pro Waitlist to Remove Ads >",
+      aiRecommend: "Ad • AI Recommended Item",
+      analyzing: "AI is finding relevant items..."
     },
     pricing: {
       tagline: "Coming Soon",
@@ -155,10 +163,13 @@ export const translations = {
     geminiFinalTitle: "Gemini 最终结论",
     gptFinalTitle: "GPT-5 Nano 最终结论",
     disclaimer: "AI 可能会提供不准确的信息。交叉验证结果仅供参考。",
+    coupangDisclaimer: "本文作为 Coupang Partners 活动的一部分，将据此收取一定费用。",
     adModal: {
       removeAds: "无广告验证",
       waitingBored: "不想等待？",
-      goPremium: "加入 Pro 候补名单以移除广告 >"
+      goPremium: "加入 Pro 候补名单以移除广告 >",
+      aiRecommend: "广告 • AI 推荐商品",
+      analyzing: "AI 正在寻找相关商品..."
     },
     pricing: {
       tagline: "Coming Soon",
@@ -220,10 +231,13 @@ export const translations = {
     geminiFinalTitle: "Geminiの最終結論",
     gptFinalTitle: "GPT-5 Nanoの最終結論",
     disclaimer: "AIは不正確な情報を表示する可能性があります。検証結果は参考としてご活用ください。",
+    coupangDisclaimer: "この記事はCoupang Partners活動の一環であり、それに応じた手数料を受け取ります。",
     adModal: {
       removeAds: "広告なしで検証",
       waitingBored: "待ちきれませんか？",
-      goPremium: "Pro待機リストに登録して広告を削除 >"
+      goPremium: "Pro待機リストに登録して広告を削除 >",
+      aiRecommend: "広告 • AIおすすめアイテム",
+      analyzing: "AIが関連商品を探しています..."
     },
     pricing: {
       tagline: "Coming Soon",

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles, User } from 'lucide-react';
@@ -50,6 +49,7 @@ export default function App() {
   // Ad & Premium State
   const [showAdModal, setShowAdModal] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const [activeAdPrompt, setActiveAdPrompt] = useState<string>(''); // For contextual ads
   
   // Pending Actions (waiting for ad)
   const [pendingCritiqueRoundId, setPendingCritiqueRoundId] = useState<string | null>(null);
@@ -151,6 +151,10 @@ export default function App() {
     setPendingCritiqueRoundId(roundId);
     setPendingFinalize(null);
     
+    // Set active prompt for ad context
+    const round = rounds.find(r => r.id === roundId);
+    if (round) setActiveAdPrompt(round.userPrompt);
+
     if (isPremium) {
       executeCritique(roundId);
     } else {
@@ -162,6 +166,10 @@ export default function App() {
   const initiateFinalize = (roundId: string, provider: ModelProvider) => {
     setPendingFinalize({ roundId, provider });
     setPendingCritiqueRoundId(null);
+
+    // Set active prompt for ad context
+    const round = rounds.find(r => r.id === roundId);
+    if (round) setActiveAdPrompt(round.userPrompt);
 
     if (isPremium) {
        executeFinalize(roundId, provider);
@@ -326,6 +334,7 @@ export default function App() {
           setShowAdModal(false);
           setShowPricingModal(true);
         }}
+        currentPrompt={activeAdPrompt}
       />
       
       <PricingModal
