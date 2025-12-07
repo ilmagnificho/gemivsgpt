@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { X, Loader2, ShieldCheck, ExternalLink, Zap, Megaphone, TrendingUp } from 'lucide-react';
+import { X, Loader2, ShieldCheck, ExternalLink, ShoppingBag, Info, ArrowRight } from 'lucide-react';
+import { translations, Language } from '../translations';
 
 interface AdModalProps {
   isOpen: boolean;
@@ -9,12 +10,63 @@ interface AdModalProps {
   currentPrompt?: string; 
 }
 
-export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete, onGoPremium }) => {
+// Mock Product Database for Contextual Targeting
+const PRODUCT_DB = [
+  {
+    keywords: ['코딩', '개발', '파이썬', '자바', 'react', 'code', 'programming'],
+    name: '로지텍 MX Master 3S 무선 마우스',
+    price: '139,000원',
+    image: 'https://img.danawa.com/prod_img/500000/524/326/img/17326524_1.jpg?shrink=330:330&_v=20220712111306',
+    desc: '개발자 필수템 1위. 손목이 편한 인체공학 디자인과 초고속 스크롤.',
+    link: 'https://www.coupang.com' // Replace with your actual affiliate link
+  },
+  {
+    keywords: ['글쓰기', '블로그', '마케팅', 'write', 'blog'],
+    name: 'Keychron K8 Pro 기계식 키보드',
+    price: '169,000원',
+    image: 'https://m.media-amazon.com/images/I/71J1S4I7JYL._AC_SL1500_.jpg',
+    desc: '타건감이 즐거운 저소음 적축. 업무 효율을 높여주는 커스텀 키보드.',
+    link: 'https://www.coupang.com'
+  },
+  {
+    keywords: ['건강', '피곤', '야근', 'health', 'tired'],
+    name: '오쏘몰 이뮨 멀티비타민 (30일분)',
+    price: '118,000원',
+    image: 'https://thumbnail7.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/8904/559868840c88346cb4307a697772652e061737e61405021e05d04588df8e.jpg',
+    desc: '마시는 링거. 지친 직장인과 수험생을 위한 프리미엄 비타민.',
+    link: 'https://www.coupang.com'
+  },
+  {
+    keywords: ['주식', '투자', '경제', 'money', 'stock'],
+    name: '돈의 속성 (김승호 저)',
+    price: '16,000원',
+    image: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791188331796.jpg',
+    desc: '최상위 부자가 말하는 돈에 대한 모든 것. 300쇄 기념 에디션.',
+    link: 'https://www.coupang.com'
+  },
+  // Default Fallback
+  {
+    keywords: ['default'],
+    name: 'Apple 2024 맥북 에어 13 M3',
+    price: '1,590,000원',
+    image: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mba13-midnight-select-202402?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1708367688034',
+    desc: 'AI 시대를 위한 압도적인 성능. M3 칩으로 더 강력하게.',
+    link: 'https://www.coupang.com'
+  }
+];
+
+export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete, onGoPremium, currentPrompt = '' }) => {
   const [timer, setTimer] = useState(5);
   const [canClose, setCanClose] = useState(false);
+  const [product, setProduct] = useState(PRODUCT_DB[PRODUCT_DB.length - 1]);
 
+  // Contextual Targeting Logic
   useEffect(() => {
     if (isOpen) {
+      const lowerPrompt = currentPrompt.toLowerCase();
+      const matched = PRODUCT_DB.find(p => p.keywords.some(k => lowerPrompt.includes(k)));
+      setProduct(matched || PRODUCT_DB[PRODUCT_DB.length - 1]);
+
       setTimer(5);
       setCanClose(false);
       const interval = setInterval(() => {
@@ -30,7 +82,7 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
 
       return () => clearInterval(interval);
     }
-  }, [isOpen]);
+  }, [isOpen, currentPrompt]);
 
   if (!isOpen) return null;
 
@@ -44,6 +96,7 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
              <ShieldCheck size={18} className="text-emerald-500"/>
              <span className="font-semibold text-sm">심층 분석 잠금 해제</span>
           </div>
+          {/* Close button hidden during ad to force view, or enabled if strategy allows */}
           <button 
             onClick={onClose}
             className="text-zinc-500 hover:text-white transition-colors"
@@ -53,49 +106,53 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
         </div>
 
         {/* Content Container */}
-        <div className="p-6 flex flex-col items-center justify-center bg-zinc-950 min-h-[360px] relative">
+        <div className="p-6 flex flex-col bg-zinc-950 min-h-[400px] relative">
            
-           {/* Upsell Link (Premium) */}
-           <button 
-             onClick={onGoPremium}
-             className="w-full mb-6 py-2 bg-gradient-to-r from-indigo-900/50 to-blue-900/50 border border-blue-500/30 rounded-lg flex items-center justify-center gap-2 text-xs text-blue-200 hover:bg-blue-900/30 transition-all group"
-           >
-             <Zap size={14} className="text-yellow-400 fill-yellow-400 group-hover:scale-110 transition-transform" />
-             <span className="font-medium">기다리기 지루하신가요? 광고 없이 검증하기 &gt;</span>
-           </button>
+           {/* Ad Badge (Required by Guidelines) */}
+           <div className="flex justify-end mb-2">
+              <span className="bg-zinc-800 text-zinc-400 text-[10px] px-2 py-0.5 rounded border border-zinc-700">광고</span>
+           </div>
 
-           {/* Sponsorship Placeholder (B2B Ad) */}
-           <div className="w-full flex-1 bg-zinc-900/50 border border-zinc-800 border-dashed rounded-xl flex flex-col items-center justify-center p-6 text-center group hover:border-zinc-600 transition-colors relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/20 to-transparent pointer-events-none"></div>
-              
-              <div className="bg-zinc-800 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform duration-500">
-                 <Megaphone size={32} className="text-zinc-400" />
+           {/* Contextual Product Card */}
+           <div className="flex-1 bg-white rounded-xl overflow-hidden flex flex-col shadow-lg relative group mb-4">
+              <div className="h-48 bg-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
+                 <img 
+                   src={product.image} 
+                   alt={product.name} 
+                   className="object-contain h-full w-full mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                 />
+                 <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md">
+                    추천 아이템
+                 </div>
               </div>
-              
-              <h3 className="text-white font-bold text-lg mb-2">
-                이 곳에 당신의 서비스를<br/>광고하세요
-              </h3>
-              
-              <p className="text-zinc-400 text-xs mb-6 leading-relaxed max-w-[240px]">
-                AI, 테크, 스타트업에 관심이 많은<br/>
-                얼리어답터들에게 가장 효과적으로 도달할 수 있습니다.
-              </p>
-
-              <div className="flex items-center gap-2 text-[10px] text-zinc-500 bg-zinc-900 px-3 py-1.5 rounded-full border border-zinc-800">
-                 <TrendingUp size={12} />
-                 <span>높은 전환율 / 타겟 마케팅</span>
-              </div>
-              
-              <div className="absolute bottom-3 text-[9px] text-zinc-600">
-                 contact: sponsor@gptvsgemi.com
+              <div className="p-4 flex-1 flex flex-col bg-white">
+                 <h3 className="text-zinc-900 font-bold text-base leading-tight mb-1 line-clamp-2">
+                   {product.name}
+                 </h3>
+                 <p className="text-zinc-500 text-xs mb-3 line-clamp-2">
+                   {product.desc}
+                 </p>
+                 <div className="mt-auto flex items-center justify-between">
+                    <span className="text-red-600 font-extrabold text-lg">{product.price}</span>
+                    <a 
+                      href={product.link}
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-1"
+                    >
+                      최저가 보기 <ExternalLink size={12} />
+                    </a>
+                 </div>
               </div>
            </div>
            
-           {/* Timer Progress */}
-           <div className="mt-6 w-full text-center">
+           {/* Timer & Disclaimer */}
+           <div className="w-full text-center space-y-3">
               {!canClose ? (
                 <>
-                  <p className="text-zinc-400 text-xs mb-2 animate-pulse">잠시 후 분석이 시작됩니다...</p>
+                  <p className="text-zinc-400 text-xs animate-pulse">
+                    AI가 분석 환경을 준비하고 있습니다...
+                  </p>
                   <div className="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
                      <div 
                        className="bg-emerald-500 h-full transition-all duration-1000 ease-linear"
@@ -104,13 +161,20 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
                   </div>
                 </>
               ) : (
-                <p className="text-emerald-500 text-xs font-bold">분석 준비 완료!</p>
+                <div className="flex flex-col gap-2">
+                  <button 
+                    onClick={onGoPremium}
+                    className="text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
+                  >
+                    이 광고 그만보기 (Pro 플랜)
+                  </button>
+                </div>
               )}
            </div>
         </div>
 
-        {/* Footer Action */}
-        <div className="p-4 bg-zinc-950 border-t border-zinc-800">
+        {/* Footer Action & Guidelines */}
+        <div className="p-4 bg-zinc-900 border-t border-zinc-800 flex flex-col gap-3">
           <button
             onClick={onAdComplete}
             disabled={!canClose}
@@ -122,7 +186,7 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
           >
             {canClose ? (
               <span className="flex items-center gap-2">
-                결과 확인하기 <ExternalLink size={16} />
+                분석 결과 확인하기 <ArrowRight size={16} />
               </span>
             ) : (
               <span className="flex items-center gap-2">
@@ -131,6 +195,15 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
               </span>
             )}
           </button>
+          
+          {/* Required Disclaimer */}
+          <div className="text-[10px] text-zinc-600 text-center leading-snug">
+            <p>이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br/>이에 따른 일정액의 수수료를 제공받습니다.</p>
+            <div className="mt-1 pt-1 border-t border-zinc-800/50 flex items-center justify-center gap-1 text-zinc-700">
+               <Info size={10} />
+               <span>광고/제휴 문의: info@tetracorp.co.kr</span>
+            </div>
+          </div>
         </div>
 
       </div>

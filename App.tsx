@@ -743,9 +743,12 @@ export default function App() {
               </button>
             </div>
           </div>
-          <div className="text-center mt-3">
+          <div className="text-center mt-3 flex flex-col items-center gap-1">
              <p className="text-[10px] text-zinc-600 font-medium">
                {t.disclaimer}
+             </p>
+             <p className="text-[10px] text-zinc-700 font-medium">
+               Contact: info@tetracorp.co.kr
              </p>
           </div>
         </footer>
