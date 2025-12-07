@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles, User } from 'lucide-react';
+import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles, User, RotateCcw } from 'lucide-react';
 import { ConversationRound, ModelProvider, ChatMessage } from './types';
 import { callGeminiAPI } from './services/geminiService';
 import { callOpenAIAPI, callOpenAICritique } from './services/openaiService';
@@ -37,6 +37,15 @@ const GPTLogo = ({ className }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg" 
   >
     <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.3829a.7911.7911 0 0 0-.785-.0001l-5.8429 3.3685v-2.3324a.071.071 0 0 1 .0332-.0615l4.8303-2.7914a4.4944 4.4944 0 0 1 6.1408 1.6464 4.4709 4.4709 0 0 1 .5346 3.0137zm2.0738-1.752a4.485 4.485 0 0 1-2.3655 1.9728v-5.6766a.7664.7664 0 0 0-.3879-.6765L12.4432 2.27l2.0201-1.1685a.0757.0757 0 0 1 .071 0l4.8303 2.7865a4.504 4.504 0 0 1 1.6465 4.113zm-9.1507-1.1444l4.5324 2.6105a.1054.1054 0 0 1 .019.1437L9.4357 18.8285a.1101.1101 0 0 1-.1419.019l-4.5324-2.6105a.1054.1054 0 0 1-.019-.1437l6.9741-11.9734a.1101.1101 0 0 1 .1419-.019z"/>
+  </svg>
+);
+
+// New CrossCheck Logo: Represents intersection and verification
+const CrossCheckLogo = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 17L17 7M17 7H11M17 7V13" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M17 17L7 7M7 17H13M7 17V11" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="12" cy="12" r="2" fill="white" className="animate-pulse"/>
   </svg>
 );
 
@@ -92,6 +101,14 @@ export default function App() {
   useEffect(() => {
     scrollToBottom();
   }, [rounds, rounds.length, isProcessing]);
+
+  // Reset function to go back to Home
+  const handleReset = () => {
+    setRounds([]);
+    setInput('');
+    setPendingCritiqueRoundId(null);
+    setPendingFinalize(null);
+  };
 
   const getHistoryForContext = (targetRoundId: string | null = null): ChatMessage[] => {
     const history: ChatMessage[] = [];
@@ -353,17 +370,21 @@ export default function App() {
 
       {/* Header */}
       <header className={`flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-500 ${!hasStarted ? 'border-transparent bg-transparent' : ''}`}>
-        <div className="flex items-center space-x-4 group cursor-default">
+        <button 
+          onClick={handleReset}
+          className="flex items-center space-x-4 group cursor-pointer hover:opacity-80 transition-opacity"
+          title={t.reset}
+        >
           <div className="relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 to-blue-600/20 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
             <div className="relative bg-zinc-900 p-2 rounded-lg border border-zinc-800">
-               <GitCompare size={24} className="text-zinc-200 transform group-hover:rotate-180 transition-transform duration-500" />
+               <CrossCheckLogo className="w-6 h-6" />
             </div>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
             <span className="text-emerald-500/90">GPT</span> <span className="text-zinc-600 mx-0.5 font-light">vs</span> <span className="text-blue-500/90">Gemi</span>
           </h1>
-        </div>
+        </button>
 
         <div className="flex items-center gap-4">
           <Button 
@@ -395,7 +416,7 @@ export default function App() {
           </div>
           
           {hasStarted && (
-             <Button variant="ghost" size="md" onClick={() => setRounds([])} icon={<RefreshCw size={18}/>}>
+             <Button variant="ghost" size="md" onClick={handleReset} icon={<RotateCcw size={18}/>}>
                {t.reset}
              </Button>
           )}

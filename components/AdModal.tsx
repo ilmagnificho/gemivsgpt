@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import { X, Loader2, ShieldCheck, ExternalLink, Zap, ShoppingBag } from 'lucide-react';
 
