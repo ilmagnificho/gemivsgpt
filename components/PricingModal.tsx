@@ -81,7 +81,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 md:px-12 pb-8">
           
           {/* Free/Beta Plan (Current) */}
-          <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 flex flex-col relative overflow-hidden ring-1 ring-emerald-500/50">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 flex flex-col relative overflow-hidden ring-1 ring-emerald-500/50 transform hover:scale-[1.02] transition-transform duration-300">
              <div className="absolute top-0 right-0 bg-zinc-800 text-zinc-300 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-zinc-700">
                {t.free.badge}
             </div>
@@ -108,7 +108,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
           </div>
 
           {/* Starter Plan (Future) */}
-          <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 flex flex-col relative overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+          <div className="bg-zinc-900/30 border border-dashed border-zinc-700 rounded-2xl p-6 flex flex-col relative overflow-hidden opacity-70 hover:opacity-100 transition-all duration-300 hover:border-zinc-500 hover:bg-zinc-900/50">
             <div className="absolute top-0 right-0 bg-zinc-800 text-zinc-500 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-zinc-700">
                {t.starter.badge}
             </div>
@@ -136,13 +136,13 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
           </div>
 
           {/* Pro Plan (Future) */}
-          <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 flex flex-col relative overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-             <div className="absolute top-0 right-0 bg-blue-900/50 text-blue-300 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-blue-900/30">
+          <div className="bg-blue-900/5 border border-dashed border-blue-900/30 rounded-2xl p-6 flex flex-col relative overflow-hidden opacity-70 hover:opacity-100 transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-900/10">
+             <div className="absolute top-0 right-0 bg-blue-900/30 text-blue-300/80 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-blue-900/20">
                {t.pro.badge}
             </div>
             <div className="mb-6">
                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                 {t.pro.name} <Zap size={16} className="text-yellow-500 fill-yellow-500" />
+                 {t.pro.name} <Zap size={16} className="text-yellow-500/70 fill-yellow-500/70" />
                </h3>
                <div className="flex items-baseline mt-2">
                  <span className="text-3xl font-bold text-white">{t.pro.price}</span>
@@ -154,7 +154,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
             <ul className="space-y-4 mb-8 flex-1">
                {t.pro.features.map((feature, idx) => (
                  <li key={idx} className="flex items-start text-sm text-zinc-300">
-                    <Check size={16} className="text-blue-400 mr-2 mt-0.5 flex-shrink-0" />
+                    <Check size={16} className="text-blue-400/70 mr-2 mt-0.5 flex-shrink-0" />
                     <span dangerouslySetInnerHTML={{__html: feature.replace("GPT-4o", "<strong>GPT-4o</strong>").replace("무제한", "<strong>무제한</strong>").replace("광고 제거", "<strong class='text-emerald-400'>광고 제거</strong>")}}></span>
                  </li>
                ))}
@@ -162,7 +162,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
 
             <button 
                disabled={true} 
-               className="w-full py-3 rounded-xl bg-blue-600/20 border border-blue-500/50 text-blue-300 font-bold text-sm"
+               className="w-full py-3 rounded-xl bg-blue-600/10 border border-blue-500/30 text-blue-300 font-bold text-sm cursor-not-allowed"
             >
                {t.pro.btn}
             </button>

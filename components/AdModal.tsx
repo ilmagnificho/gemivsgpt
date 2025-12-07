@@ -149,29 +149,31 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
            
            {/* Timer & Up-sell Button */}
            <div className="w-full text-center space-y-3">
+               {/* Upsell Button (Always visible now) */}
+               <button 
+                onClick={onGoPremium}
+                className="w-full py-3 bg-zinc-900 border border-blue-500/30 text-blue-400 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-900/10 transition-colors group mb-2"
+              >
+                <Zap size={16} className="text-yellow-400 fill-yellow-400 group-hover:scale-110 transition-transform"/>
+                <span className="font-bold text-sm">{translations.en.adModal.goPremium}</span>
+              </button>
+
               {!canClose ? (
                 <>
-                   {/* Upsell Button (Active while waiting) */}
-                   <button 
-                    onClick={onGoPremium}
-                    className="w-full py-3 bg-zinc-900 border border-blue-500/30 text-blue-400 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-900/10 transition-colors group"
-                  >
-                    <Zap size={16} className="text-yellow-400 fill-yellow-400 group-hover:scale-110 transition-transform"/>
-                    <span className="font-bold text-sm">{translations.en.adModal.goPremium}</span>
-                  </button>
-
-                  <div className="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
-                     <div 
-                       className="bg-emerald-500 h-full transition-all duration-1000 ease-linear"
-                       style={{ width: `${((5 - timer) / 5) * 100}%` }}
-                     ></div>
-                  </div>
-                  <p className="text-zinc-500 text-xs">
-                    {timer}초 뒤 분석이 시작됩니다...
-                  </p>
+                   <div className="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
+                      <div 
+                        className="bg-emerald-500 h-full transition-all duration-1000 ease-linear"
+                        style={{ width: `${((5 - timer) / 5) * 100}%` }}
+                      ></div>
+                   </div>
+                   <p className="text-zinc-500 text-xs">
+                     {timer}초 뒤 분석이 시작됩니다...
+                   </p>
                 </>
               ) : (
-                <div className="h-[52px]"></div> // Spacer to keep layout stable
+                 <p className="text-emerald-500 text-xs font-bold animate-pulse">
+                   분석이 완료되었습니다! 아래 버튼을 눌러 확인하세요.
+                 </p>
               )}
            </div>
         </div>
