@@ -1,7 +1,7 @@
 
 export const LIMITS = {
-  QUESTIONS_PER_DAY: 5,
-  CRITIQUES_PER_DAY: 2
+  QUESTIONS_PER_DAY: 3,
+  CRITIQUES_PER_DAY: 6
 };
 
 export type UsageType = 'question' | 'critique';

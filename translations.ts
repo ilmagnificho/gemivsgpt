@@ -34,28 +34,42 @@ export const translations = {
     adModal: {
       removeAds: "광고 없이 검증하기",
       waitingBored: "기다리기 지루하신가요?",
-      goPremium: "Pro 대기 명단 등록하고 광고 제거 >",
+      goPremium: "Pro 대기 명단 등록하고 광고 제거하기",
       aiRecommend: "광고 • AI 맞춤 추천",
       analyzing: "AI가 관련 상품을 찾고 있습니다..."
     },
     pricing: {
-      tagline: "Coming Soon",
+      tagline: "Beta Service",
       title: "더 강력한 교차 검증 경험",
-      desc: "현재 베타 서비스 중입니다. 정식 출시 시 가장 먼저 알림을 받고, 초기 사용자 한정 혜택을 누리세요.",
+      desc: "현재 베타 서비스 기간입니다. 정식 출시 알림을 받고 얼리버드 혜택을 누리세요.",
+      free: {
+        name: "Beta Free",
+        price: "$0",
+        badge: "현재 이용 중",
+        desc: "제한된 무료 체험",
+        features: [
+          "일반 대화 일 3회",
+          "심층 교차 검증 일 6회",
+          "광고 노출"
+        ],
+        btn: "이용 중"
+      },
       starter: {
         name: "Starter",
         price: "$4.99",
+        badge: "Coming Soon",
         desc: "가볍게 시작하는 AI 교차 검증",
         features: [
-          "일반 대화 무제한 (GPT-5 Nano)",
+          "일반 대화 무제한",
           "심층 교차 검증 일 30회",
           "광고 없는 쾌적한 환경"
         ],
-        btn: "현재 기본 제공 중"
+        btn: "출시 알림 받기"
       },
       pro: {
         name: "Pro",
         price: "$19.99",
+        badge: "Coming Soon",
         desc: "전문가를 위한 완벽한 분석 도구",
         features: [
           "GPT-5.1 무제한 대화",
@@ -107,28 +121,42 @@ export const translations = {
     adModal: {
       removeAds: "Verify without Ads",
       waitingBored: "Tired of waiting?",
-      goPremium: "Join Pro Waitlist to Remove Ads >",
+      goPremium: "Join Pro Waitlist to Remove Ads",
       aiRecommend: "Ad • AI Recommended Item",
       analyzing: "AI is finding relevant items..."
     },
     pricing: {
-      tagline: "Coming Soon",
+      tagline: "Beta Service",
       title: "Enhanced Cross-Verification",
-      desc: "Currently in beta. Get notified first when we launch and enjoy exclusive early bird benefits.",
+      desc: "Currently in Beta. Get notified for the official launch and enjoy early bird benefits.",
+      free: {
+        name: "Beta Free",
+        price: "$0",
+        badge: "Current Plan",
+        desc: "Limited Access",
+        features: [
+          "3 Questions / Day",
+          "6 Cross-Checks / Day",
+          "Ad-Supported"
+        ],
+        btn: "Active"
+      },
       starter: {
         name: "Starter",
         price: "$4.99",
+        badge: "Coming Soon",
         desc: "Lightweight AI cross-check",
         features: [
-          "Unlimited General Chat (GPT-5 Nano)",
+          "Unlimited General Chat",
           "30 Deep Cross-Checks / Day",
           "Ad-Free Experience"
         ],
-        btn: "Currently Available"
+        btn: "Get Notified"
       },
       pro: {
         name: "Pro",
         price: "$19.99",
+        badge: "Coming Soon",
         desc: "The ultimate tool for professionals",
         features: [
           "Unlimited GPT-5.1 Chat",
@@ -180,28 +208,42 @@ export const translations = {
     adModal: {
       removeAds: "无广告验证",
       waitingBored: "不想等待？",
-      goPremium: "加入 Pro 候补名单以移除广告 >",
+      goPremium: "加入 Pro 候补名单以移除广告",
       aiRecommend: "广告 • AI 推荐商品",
       analyzing: "AI 正在寻找相关商品..."
     },
     pricing: {
-      tagline: "Coming Soon",
+      tagline: "Beta Service",
       title: "更强大的交叉验证体验",
       desc: "目前处于测试阶段。正式发布时第一时间获取通知，享受早期用户专属优惠。",
+      free: {
+        name: "Beta Free",
+        price: "$0",
+        badge: "当前计划",
+        desc: "有限的免费体验",
+        features: [
+          "每日 3 次一般对话",
+          "每日 6 次深度交叉验证",
+          "包含广告"
+        ],
+        btn: "使用中"
+      },
       starter: {
         name: "Starter",
         price: "$4.99",
+        badge: "Coming Soon",
         desc: "轻松开始 AI 交叉验证",
         features: [
-          "无限一般对话 (GPT-5 Nano)",
+          "无限一般对话",
           "每日 30 次深度交叉验证",
           "无广告体验"
         ],
-        btn: "当前可用"
+        btn: "获取通知"
       },
       pro: {
         name: "Pro",
         price: "$19.99",
+        badge: "Coming Soon",
         desc: "专业人士的终极分析工具",
         features: [
           "无限 GPT-5.1 对话",
@@ -253,28 +295,42 @@ export const translations = {
     adModal: {
       removeAds: "広告なしで検証",
       waitingBored: "待ちきれませんか？",
-      goPremium: "Pro待機リストに登録して広告を削除 >",
+      goPremium: "Pro待機リストに登録して広告を削除",
       aiRecommend: "広告 • AIおすすめアイテム",
       analyzing: "AIが関連商品を探しています..."
     },
     pricing: {
-      tagline: "Coming Soon",
+      tagline: "Beta Service",
       title: "より強力なクロスチェック体験",
       desc: "現在ベータ版です。正式リリース時に最速で通知を受け取り、初期ユーザー限定特典をご利用ください。",
+      free: {
+        name: "Beta Free",
+        price: "$0",
+        badge: "現在のプラン",
+        desc: "制限付き無料体験",
+        features: [
+          "一般会話 1日3回",
+          "深度クロスチェック 1日6回",
+          "広告あり"
+        ],
+        btn: "利用中"
+      },
       starter: {
         name: "Starter",
         price: "$4.99",
+        badge: "Coming Soon",
         desc: "手軽に始めるAIクロスチェック",
         features: [
-          "一般会話無制限 (GPT-5 Nano)",
+          "一般会話無制限",
           "深度クロスチェック 1日30回",
           "広告なしの快適な環境"
         ],
-        btn: "現在利用可能"
+        btn: "通知を受け取る"
       },
       pro: {
         name: "Pro",
         price: "$19.99",
+        badge: "Coming Soon",
         desc: "専門家のための完璧な分析ツール",
         features: [
           "GPT-5.1 無制限会話",

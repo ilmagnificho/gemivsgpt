@@ -56,7 +56,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in-up">
-      <div className="bg-zinc-950 border border-zinc-800 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col relative max-h-[90vh] overflow-y-auto scrollbar-hide">
+      <div className="bg-zinc-950 border border-zinc-800 w-full max-w-6xl rounded-3xl shadow-2xl overflow-hidden flex flex-col relative max-h-[95vh] overflow-y-auto scrollbar-hide">
         
         <button 
           onClick={onClose}
@@ -66,11 +66,11 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
         </button>
 
         <div className="p-8 text-center space-y-4 pt-12">
-          <div className="inline-flex items-center space-x-2 bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/20">
+          <div className="inline-flex items-center space-x-2 bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-500/20">
             {t.tagline}
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">{t.title}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">{t.title}</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed">
             {t.desc}
@@ -78,52 +78,82 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 md:px-12 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 md:px-12 pb-8">
           
-          {/* Starter Plan */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 md:p-8 flex flex-col relative overflow-hidden hover:border-zinc-700 transition-all duration-300">
+          {/* Free/Beta Plan (Current) */}
+          <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 flex flex-col relative overflow-hidden ring-1 ring-emerald-500/50">
+             <div className="absolute top-0 right-0 bg-zinc-800 text-zinc-300 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-zinc-700">
+               {t.free.badge}
+            </div>
+            <div className="mb-6">
+               <h3 className="text-xl font-bold text-zinc-100">{t.free.name}</h3>
+               <div className="flex items-baseline mt-2">
+                 <span className="text-3xl font-bold text-white">{t.free.price}</span>
+               </div>
+               <p className="text-zinc-400 text-sm mt-2">{t.free.desc}</p>
+            </div>
+            
+            <ul className="space-y-4 mb-8 flex-1">
+               {t.free.features.map((feature, idx) => (
+                 <li key={idx} className="flex items-start text-sm text-zinc-300">
+                    <Check size={16} className="text-zinc-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>{feature}</span>
+                 </li>
+               ))}
+            </ul>
+
+            <button disabled className="w-full py-3 rounded-xl border border-zinc-700 text-emerald-400 font-bold text-sm cursor-not-allowed bg-emerald-900/10">
+              {t.free.btn}
+            </button>
+          </div>
+
+          {/* Starter Plan (Future) */}
+          <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 flex flex-col relative overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+            <div className="absolute top-0 right-0 bg-zinc-800 text-zinc-500 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-zinc-700">
+               {t.starter.badge}
+            </div>
             <div className="mb-6">
                <h3 className="text-xl font-bold text-zinc-100">{t.starter.name}</h3>
                <div className="flex items-baseline mt-2">
                  <span className="text-3xl font-bold text-white">{t.starter.price}</span>
                  <span className="text-zinc-500 ml-1">/mo</span>
                </div>
-               <p className="text-zinc-400 text-sm mt-2">{t.starter.desc}</p>
+               <p className="text-zinc-500 text-sm mt-2">{t.starter.desc}</p>
             </div>
             
             <ul className="space-y-4 mb-8 flex-1">
                {t.starter.features.map((feature, idx) => (
-                 <li key={idx} className="flex items-start text-sm text-zinc-300">
-                    <Check size={16} className="text-emerald-500 mr-2 mt-0.5 flex-shrink-0" />
+                 <li key={idx} className="flex items-start text-sm text-zinc-400">
+                    <Check size={16} className="text-zinc-600 mr-2 mt-0.5 flex-shrink-0" />
                     <span>{feature}</span>
                  </li>
                ))}
             </ul>
 
-            <button disabled className="w-full py-3 rounded-xl border border-zinc-700 text-zinc-400 font-medium text-sm cursor-not-allowed bg-zinc-800/50">
+            <button disabled className="w-full py-3 rounded-xl border border-dashed border-zinc-700 text-zinc-500 font-medium text-sm cursor-not-allowed">
               {t.starter.btn}
             </button>
           </div>
 
-          {/* Pro Plan */}
-          <div className="bg-zinc-900 border border-blue-500/30 rounded-2xl p-6 md:p-8 flex flex-col relative overflow-hidden shadow-2xl shadow-blue-900/10 hover:shadow-blue-900/20 transition-all duration-300 transform hover:-translate-y-1">
-            <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">
-               RECOMMENDED
+          {/* Pro Plan (Future) */}
+          <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 flex flex-col relative overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+             <div className="absolute top-0 right-0 bg-blue-900/50 text-blue-300 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-blue-900/30">
+               {t.pro.badge}
             </div>
             <div className="mb-6">
                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                 {t.pro.name} <Zap size={16} className="text-yellow-400 fill-yellow-400" />
+                 {t.pro.name} <Zap size={16} className="text-yellow-500 fill-yellow-500" />
                </h3>
                <div className="flex items-baseline mt-2">
                  <span className="text-3xl font-bold text-white">{t.pro.price}</span>
                  <span className="text-zinc-500 ml-1">/mo</span>
                </div>
-               <p className="text-blue-200/60 text-sm mt-2">{t.pro.desc}</p>
+               <p className="text-blue-200/40 text-sm mt-2">{t.pro.desc}</p>
             </div>
             
             <ul className="space-y-4 mb-8 flex-1">
                {t.pro.features.map((feature, idx) => (
-                 <li key={idx} className="flex items-start text-sm text-zinc-100">
+                 <li key={idx} className="flex items-start text-sm text-zinc-300">
                     <Check size={16} className="text-blue-400 mr-2 mt-0.5 flex-shrink-0" />
                     <span dangerouslySetInnerHTML={{__html: feature.replace("GPT-4o", "<strong>GPT-4o</strong>").replace("무제한", "<strong>무제한</strong>").replace("광고 제거", "<strong class='text-emerald-400'>광고 제거</strong>")}}></span>
                  </li>
@@ -132,7 +162,7 @@ export const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, lan
 
             <button 
                disabled={true} 
-               className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-lg opacity-90"
+               className="w-full py-3 rounded-xl bg-blue-600/20 border border-blue-500/50 text-blue-300 font-bold text-sm"
             >
                {t.pro.btn}
             </button>

@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
-import { X, Loader2, ShieldCheck, ExternalLink, ShoppingBag, Info, ArrowRight } from 'lucide-react';
+import { X, Loader2, ShieldCheck, ExternalLink, Info, ArrowRight, Zap } from 'lucide-react';
 import { translations, Language } from '../translations';
 
 interface AdModalProps {
@@ -146,29 +147,31 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
               </div>
            </div>
            
-           {/* Timer & Disclaimer */}
+           {/* Timer & Up-sell Button */}
            <div className="w-full text-center space-y-3">
               {!canClose ? (
                 <>
-                  <p className="text-zinc-400 text-xs animate-pulse">
-                    AI가 분석 환경을 준비하고 있습니다...
-                  </p>
+                   {/* Upsell Button (Active while waiting) */}
+                   <button 
+                    onClick={onGoPremium}
+                    className="w-full py-3 bg-zinc-900 border border-blue-500/30 text-blue-400 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-900/10 transition-colors group"
+                  >
+                    <Zap size={16} className="text-yellow-400 fill-yellow-400 group-hover:scale-110 transition-transform"/>
+                    <span className="font-bold text-sm">{translations.en.adModal.goPremium}</span>
+                  </button>
+
                   <div className="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
                      <div 
                        className="bg-emerald-500 h-full transition-all duration-1000 ease-linear"
                        style={{ width: `${((5 - timer) / 5) * 100}%` }}
                      ></div>
                   </div>
+                  <p className="text-zinc-500 text-xs">
+                    {timer}초 뒤 분석이 시작됩니다...
+                  </p>
                 </>
               ) : (
-                <div className="flex flex-col gap-2">
-                  <button 
-                    onClick={onGoPremium}
-                    className="text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
-                  >
-                    이 광고 그만보기 (Pro 플랜)
-                  </button>
-                </div>
+                <div className="h-[52px]"></div> // Spacer to keep layout stable
               )}
            </div>
         </div>
@@ -181,25 +184,20 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
             className={`w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center transition-all shadow-lg ${
               canClose 
                 ? 'bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-[1.02] active:scale-[0.98] shadow-emerald-900/20' 
-                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed hidden'
             }`}
           >
-            {canClose ? (
+            {canClose && (
               <span className="flex items-center gap-2">
                 분석 결과 확인하기 <ArrowRight size={16} />
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                <Loader2 size={16} className="animate-spin"/> 
-                {timer}초 후 닫기 가능
               </span>
             )}
           </button>
           
-          {/* Required Disclaimer */}
-          <div className="text-[10px] text-zinc-600 text-center leading-snug">
+          {/* Required Disclaimer (Improved Visibility) */}
+          <div className="text-xs text-zinc-500 text-center leading-snug font-medium">
             <p>이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br/>이에 따른 일정액의 수수료를 제공받습니다.</p>
-            <div className="mt-1 pt-1 border-t border-zinc-800/50 flex items-center justify-center gap-1 text-zinc-700">
+            <div className="mt-2 pt-2 border-t border-zinc-800/50 flex items-center justify-center gap-1 text-zinc-600 text-[10px]">
                <Info size={10} />
                <span>광고/제휴 문의: info@tetracorp.co.kr</span>
             </div>
