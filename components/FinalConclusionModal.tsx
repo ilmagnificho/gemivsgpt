@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { X, Copy, Check, Sparkles } from 'lucide-react';
+import { X, Copy, Check, Sparkles, Share2 } from 'lucide-react';
 import { ModelProvider } from '../types';
 
 interface FinalConclusionModalProps {
@@ -22,6 +23,23 @@ export const FinalConclusionModal: React.FC<FinalConclusionModalProps> = ({
     navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: content.substring(0, 100) + "...\n\nRead more at GPT vs Gemi:",
+          url: window.location.origin
+        });
+      } catch (err) {
+        console.error('Share failed', err);
+      }
+    } else {
+      handleCopy();
+      alert("Text copied to clipboard!");
+    }
   };
 
   const isGemini = provider === ModelProvider.GEMINI;
@@ -52,6 +70,13 @@ export const FinalConclusionModal: React.FC<FinalConclusionModalProps> = ({
              </h2>
           </div>
           <div className="flex items-center gap-3">
+            <button 
+              onClick={handleShare}
+              className="p-2.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-colors border border-transparent hover:border-zinc-700"
+              title="Share"
+            >
+              <Share2 size={20} />
+            </button>
             <button 
               onClick={handleCopy}
               className="p-2.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-colors border border-transparent hover:border-zinc-700"

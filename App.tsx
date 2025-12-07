@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles, User, RotateCcw } from 'lucide-react';
+import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles, User, RotateCcw, Share2, Copy } from 'lucide-react';
 import { ConversationRound, ModelProvider, ChatMessage } from './types';
 import { callGeminiAPI } from './services/geminiService';
 import { callOpenAIAPI, callOpenAICritique } from './services/openaiService';
@@ -10,6 +11,7 @@ import { AdModal } from './components/AdModal';
 import { PricingModal } from './components/PricingModal';
 import { FinalConclusionModal } from './components/FinalConclusionModal';
 import { translations, Language } from './translations';
+import { checkLimit, incrementUsage } from './utils/usageLimit';
 
 // Custom Icons for better brand recognition
 const GeminiLogo = ({ className }: { className?: string }) => (
@@ -58,8 +60,11 @@ export default function App() {
   // Ad & Premium State
   const [showAdModal, setShowAdModal] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
-  const [activeAdPrompt, setActiveAdPrompt] = useState<string>(''); // For contextual ads
+  const [activeAdPrompt, setActiveAdPrompt] = useState<string>(''); 
   
+  // Usage Limit State
+  const [limitError, setLimitError] = useState(false);
+
   // Pending Actions (waiting for ad)
   const [pendingCritiqueRoundId, setPendingCritiqueRoundId] = useState<string | null>(null);
   const [pendingFinalize, setPendingFinalize] = useState<{ roundId: string, provider: ModelProvider } | null>(null);
@@ -72,9 +77,7 @@ export default function App() {
     title: string;
   }>({ isOpen: false, content: '', provider: ModelProvider.GPT, title: '' });
   
-  // TODO: Connect this to actual auth/user state later
   const [isPremium, setIsPremium] = useState(false); 
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize Language based on browser
@@ -110,6 +113,25 @@ export default function App() {
     setPendingFinalize(null);
   };
 
+  const handleShare = async () => {
+    const url = window.location.origin;
+    const text = t.heroDesc.replace('\n', ' ');
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: t.title,
+          text: text,
+          url: url
+        });
+      } catch (err) {
+        console.error('Share failed', err);
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      alert(t.shareSuccess);
+    }
+  };
+
   const getHistoryForContext = (targetRoundId: string | null = null): ChatMessage[] => {
     const history: ChatMessage[] = [];
     for (const round of rounds) {
@@ -125,6 +147,16 @@ export default function App() {
 
   const handleSend = async () => {
     if (!input.trim() || isProcessing) return;
+
+    // Check Question Limit
+    if (!isPremium && !checkLimit('question')) {
+      setLimitError(true);
+      setShowPricingModal(true);
+      return;
+    }
+
+    // Increment Usage
+    if (!isPremium) incrementUsage('question');
 
     const newRoundId = Date.now().toString();
     const newRound: ConversationRound = {
@@ -165,6 +197,13 @@ export default function App() {
 
   // Critique Flow
   const initiateCritique = (roundId: string) => {
+    // Check Critique Limit
+    if (!isPremium && !checkLimit('critique')) {
+      setLimitError(true);
+      setShowPricingModal(true);
+      return;
+    }
+
     setPendingCritiqueRoundId(roundId);
     setPendingFinalize(null);
     
@@ -184,7 +223,6 @@ export default function App() {
     setPendingFinalize({ roundId, provider });
     setPendingCritiqueRoundId(null);
 
-    // Set active prompt for ad context
     const round = rounds.find(r => r.id === roundId);
     if (round) setActiveAdPrompt(round.userPrompt);
 
@@ -199,6 +237,8 @@ export default function App() {
   const handleAdComplete = () => {
     setShowAdModal(false);
     if (pendingCritiqueRoundId) {
+      // Increment Usage for critique after ad
+      if (!isPremium) incrementUsage('critique');
       executeCritique(pendingCritiqueRoundId);
     } else if (pendingFinalize) {
       executeFinalize(pendingFinalize.roundId, pendingFinalize.provider);
@@ -356,7 +396,10 @@ export default function App() {
       
       <PricingModal
         isOpen={showPricingModal}
-        onClose={() => setShowPricingModal(false)}
+        onClose={() => {
+          setShowPricingModal(false);
+          setLimitError(false);
+        }}
         lang={lang}
       />
 
@@ -377,8 +420,9 @@ export default function App() {
         >
           <div className="relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 to-blue-600/20 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
-            <div className="relative bg-zinc-900 p-2 rounded-lg border border-zinc-800">
-               <CrossCheckLogo className="w-6 h-6" />
+            <div className="relative bg-zinc-900 p-2.5 rounded-lg border border-zinc-800">
+               {/* Increased Logo Size */}
+               <CrossCheckLogo className="w-9 h-9" />
             </div>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
@@ -386,21 +430,31 @@ export default function App() {
           </h1>
         </button>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           <Button 
             variant="ghost" 
             size="md" 
-            className="text-zinc-400 hover:text-white"
+            className="text-zinc-400 hover:text-white hidden md:flex"
             onClick={() => setShowPricingModal(true)}
             icon={<CreditCard size={18}/>}
           >
             Pricing
           </Button>
 
+          <Button 
+            variant="ghost" 
+            size="md" 
+            className="text-zinc-400 hover:text-white"
+            onClick={handleShare}
+            icon={<Share2 size={18}/>}
+          >
+            <span className="hidden md:inline">{t.share}</span>
+          </Button>
+
           <div className="relative group">
             <button className="flex items-center space-x-2 text-zinc-400 hover:text-white transition-colors p-2">
               <Globe size={20} />
-              <span className="text-sm font-bold uppercase">{lang}</span>
+              <span className="text-sm font-bold uppercase hidden md:inline">{lang}</span>
             </button>
             <div className="absolute right-0 mt-2 w-36 bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden z-50">
               {(['en', 'ko', 'zh', 'ja'] as Language[]).map((l) => (
@@ -417,14 +471,15 @@ export default function App() {
           
           {hasStarted && (
              <Button variant="ghost" size="md" onClick={handleReset} icon={<RotateCcw size={18}/>}>
-               {t.reset}
+               <span className="hidden md:inline">{t.reset}</span>
              </Button>
           )}
         </div>
       </header>
 
-      {/* Main Content - Expanded Width */}
+      {/* Main Content */}
       <main className={`flex-1 overflow-y-auto w-full max-w-7xl mx-auto transition-all duration-500 ${hasStarted ? 'p-4 md:p-8' : 'flex items-center justify-center p-4'}`}>
+        {/* ... (Rest of content structure remains the same) ... */}
         
         {/* HERO SECTION */}
         {!hasStarted && (
@@ -507,15 +562,10 @@ export default function App() {
           <div className="space-y-24">
             {rounds.map((round) => (
               <div key={round.id} className="group relative">
-                {/* User Content - Full Width Header Style */}
                 <ChatBubble content={round.userPrompt} provider={ModelProvider.USER} />
 
-                {/* ORIGINAL RESPONSES - 2 Column Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16 relative">
-                  {/* Vertical Divider (Desktop Only) */}
                   <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-zinc-800 to-transparent -translate-x-1/2"></div>
-
-                  {/* GPT Column */}
                   <div className="flex flex-col h-full relative">
                     <div className="flex items-center gap-3 mb-5 pl-2">
                        <div className="p-1.5 bg-emerald-900/30 rounded-lg border border-emerald-900/50">
@@ -526,14 +576,8 @@ export default function App() {
                          <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Answer A</span>
                        </div>
                     </div>
-                    <ChatBubble 
-                      content={round.gptResponse || ""} 
-                      provider={ModelProvider.GPT} 
-                      isLoading={round.isGptLoading}
-                    />
+                    <ChatBubble content={round.gptResponse || ""} provider={ModelProvider.GPT} isLoading={round.isGptLoading}/>
                   </div>
-
-                  {/* Gemini Column */}
                   <div className="flex flex-col h-full relative">
                     <div className="flex items-center gap-3 mb-5 pl-2">
                        <div className="p-1.5 bg-blue-900/30 rounded-lg border border-blue-900/50">
@@ -544,31 +588,22 @@ export default function App() {
                          <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Answer B</span>
                        </div>
                     </div>
-                    <ChatBubble 
-                      content={round.geminiResponse || ""} 
-                      provider={ModelProvider.GEMINI} 
-                      isLoading={round.isGeminiLoading}
-                    />
+                    <ChatBubble content={round.geminiResponse || ""} provider={ModelProvider.GEMINI} isLoading={round.isGeminiLoading}/>
                   </div>
                 </div>
 
-                {/* CRITIQUE THREADS */}
                 {round.critiques.map((critique, index) => (
                   <div key={critique.id} className="animate-fade-in-up mt-12 relative max-w-6xl mx-auto">
-                     {/* Connector Line */}
                      <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-zinc-900 border-4 border-zinc-950 flex items-center justify-center z-10">
                         <div className="w-2 h-2 rounded-full bg-zinc-600"></div>
                      </div>
-                     
                      <div className="text-center mb-8">
                        <span className="text-xs uppercase font-extrabold text-zinc-400 bg-zinc-900 px-4 py-1.5 rounded-full border border-zinc-800 shadow-sm tracking-wider">
                          Cross-Verification Phase {index + 1}
                        </span>
                      </div>
-
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* GPT's Critique */}
                         <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl p-6 md:p-8 relative overflow-hidden group/critique hover:bg-zinc-900/50 transition-colors">
                             <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800">
                               <GPTLogo className="w-5 h-5 text-emerald-500" />
@@ -578,8 +613,6 @@ export default function App() {
                               <ReactMarkdown>{critique.gptContent}</ReactMarkdown>
                             </div>
                         </div>
-
-                        {/* Gemini's Critique */}
                         <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl p-6 md:p-8 relative overflow-hidden group/critique hover:bg-zinc-900/50 transition-colors">
                             <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800">
                               <GeminiLogo className="w-5 h-5" />
@@ -593,7 +626,6 @@ export default function App() {
                   </div>
                 ))}
                 
-                {/* Final Conclusion Inline Preview */}
                 {(round.gptFinalConclusion || round.geminiFinalConclusion) && (
                    <div className="mt-16 animate-fade-in-up max-w-5xl mx-auto">
                       <div className="flex items-center justify-center mb-8">
@@ -646,7 +678,6 @@ export default function App() {
                    </div>
                 )}
 
-                {/* Loading State */}
                 {(round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing) && (
                    <div className="mt-12 relative animate-fade-in-up">
                       <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
@@ -659,10 +690,8 @@ export default function App() {
                    </div>
                 )}
 
-                {/* Actions */}
                 {!round.isGeminiLoading && !round.isGptLoading && (
                     <div className="flex flex-col items-center gap-8 mt-16 mb-8 relative z-20 pb-12">
-                      
                       <div className="flex justify-center">
                         <Button 
                           variant="secondary" 

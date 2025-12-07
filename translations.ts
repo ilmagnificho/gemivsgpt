@@ -1,6 +1,4 @@
 
-
-
 export type Language = 'ko' | 'en' | 'zh' | 'ja';
 
 export const translations = {
@@ -12,6 +10,9 @@ export const translations = {
     placeholder: "검증하고 싶은 주제나 질문을 입력하세요...",
     send: "분석 시작",
     reset: "새로운 대화",
+    share: "공유하기",
+    shareSuccess: "링크가 복사되었습니다!",
+    shareFail: "공유하기 실패",
     geminiName: "GEMINI 2.5 FLASH",
     gptName: "GPT-5 NANO",
     critiqueBtn: "교차 검증 실행",
@@ -28,6 +29,8 @@ export const translations = {
     gptFinalTitle: "GPT-5 Nano의 최종 결론",
     disclaimer: "AI는 부정확한 정보를 제공할 수 있습니다. 교차 검증 결과를 참고용으로 활용하세요.",
     coupangDisclaimer: "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
+    limitReachedTitle: "일일 사용 한도 초과",
+    limitReachedDesc: "무료 사용량을 모두 소진했습니다.\nPro 대기 명단에 등록하고 무제한 이용 혜택을 받으세요.",
     adModal: {
       removeAds: "광고 없이 검증하기",
       waitingBored: "기다리기 지루하신가요?",
@@ -80,6 +83,9 @@ export const translations = {
     placeholder: "Enter a topic to verify...",
     send: "Analyze",
     reset: "New Chat",
+    share: "Share",
+    shareSuccess: "Link copied!",
+    shareFail: "Share failed",
     geminiName: "GEMINI 2.5 FLASH",
     gptName: "GPT-5 NANO",
     critiqueBtn: "Run Cross-Check",
@@ -96,6 +102,8 @@ export const translations = {
     gptFinalTitle: "GPT-5 Nano's Final Conclusion",
     disclaimer: "AI may display inaccurate info. Use cross-check results for reference.",
     coupangDisclaimer: "This post is part of Coupang Partners activity, and a fee is received accordingly.",
+    limitReachedTitle: "Daily Limit Reached",
+    limitReachedDesc: "You have used all free daily requests.\nJoin the Pro waitlist for unlimited access.",
     adModal: {
       removeAds: "Verify without Ads",
       waitingBored: "Tired of waiting?",
@@ -148,6 +156,9 @@ export const translations = {
     placeholder: "输入想要验证的主题...",
     send: "开始分析",
     reset: "新对话",
+    share: "分享",
+    shareSuccess: "链接已复制！",
+    shareFail: "分享失败",
     geminiName: "GEMINI 2.5 FLASH",
     gptName: "GPT-5 NANO",
     critiqueBtn: "执行交叉验证",
@@ -164,6 +175,8 @@ export const translations = {
     gptFinalTitle: "GPT-5 Nano 最终结论",
     disclaimer: "AI 可能会提供不准确的信息。交叉验证结果仅供参考。",
     coupangDisclaimer: "本文作为 Coupang Partners 活动的一部分，将据此收取一定费用。",
+    limitReachedTitle: "达到每日限额",
+    limitReachedDesc: "您已用完免费额度。\n加入 Pro 候补名单以获取无限访问权限。",
     adModal: {
       removeAds: "无广告验证",
       waitingBored: "不想等待？",
@@ -216,6 +229,9 @@ export const translations = {
     placeholder: "検証したいテーマや質問を入力...",
     send: "分析開始",
     reset: "新しい対話",
+    share: "共有",
+    shareSuccess: "リンクをコピーしました！",
+    shareFail: "共有失敗",
     geminiName: "GEMINI 2.5 FLASH",
     gptName: "GPT-5 NANO",
     critiqueBtn: "クロスチェック実行",
@@ -232,6 +248,8 @@ export const translations = {
     gptFinalTitle: "GPT-5 Nanoの最終結論",
     disclaimer: "AIは不正確な情報を表示する可能性があります。検証結果は参考としてご活用ください。",
     coupangDisclaimer: "この記事はCoupang Partners活動の一環であり、それに応じた手数料を受け取ります。",
+    limitReachedTitle: "1日の利用制限に達しました",
+    limitReachedDesc: "無料利用分を使い切りました。\nPro待機リストに登録して無制限アクセス特典を受け取りましょう。",
     adModal: {
       removeAds: "広告なしで検証",
       waitingBored: "待ちきれませんか？",
