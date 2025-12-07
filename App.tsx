@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles } from 'lucide-react';
+import { Send, RefreshCw, GitCompare, ArrowRight, Globe, CreditCard, CheckCircle, Sparkles, User } from 'lucide-react';
 import { ConversationRound, ModelProvider, ChatMessage } from './types';
 import { callGeminiAPI } from './services/geminiService';
 import { callOpenAIAPI, callOpenAICritique } from './services/openaiService';
@@ -281,7 +281,6 @@ export default function App() {
         finalResult = await callOpenAIAPI(synthesisPrompt); 
       }
 
-      // Update round data AND open modal
       setRounds(prev => prev.map(r => r.id === roundId ? { 
         ...r, 
         gptFinalConclusion: provider === ModelProvider.GPT ? finalResult : r.gptFinalConclusion,
@@ -316,7 +315,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-zinc-700/50">
+    <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-emerald-500/30">
       
       {/* Modals */}
       <AdModal 
@@ -344,7 +343,7 @@ export default function App() {
       />
 
       {/* Header */}
-      <header className={`flex items-center justify-between px-6 py-5 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-500 ${!hasStarted ? 'border-transparent bg-transparent' : ''}`}>
+      <header className={`flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-500 ${!hasStarted ? 'border-transparent bg-transparent' : ''}`}>
         <div className="flex items-center space-x-4 group cursor-default">
           <div className="relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600/20 to-blue-600/20 rounded-lg blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
@@ -394,8 +393,8 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className={`flex-1 overflow-y-auto w-full max-w-5xl mx-auto transition-all duration-500 ${hasStarted ? 'p-4 md:p-6' : 'flex items-center justify-center p-4'}`}>
+      {/* Main Content - Expanded Width */}
+      <main className={`flex-1 overflow-y-auto w-full max-w-7xl mx-auto transition-all duration-500 ${hasStarted ? 'p-4 md:p-8' : 'flex items-center justify-center p-4'}`}>
         
         {/* HERO SECTION */}
         {!hasStarted && (
@@ -475,21 +474,27 @@ export default function App() {
 
         {/* CHAT LIST */}
         {hasStarted && (
-          <div className="space-y-16">
+          <div className="space-y-24">
             {rounds.map((round) => (
               <div key={round.id} className="group relative">
-                {/* User Bubble */}
+                {/* User Content - Full Width Header Style */}
                 <ChatBubble content={round.userPrompt} provider={ModelProvider.USER} />
 
-                {/* ORIGINAL RESPONSES */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
+                {/* ORIGINAL RESPONSES - 2 Column Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16 relative">
+                  {/* Vertical Divider (Desktop Only) */}
+                  <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-zinc-800 to-transparent -translate-x-1/2"></div>
+
                   {/* GPT Column */}
-                  <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-3 px-2">
-                      <div className="flex items-center space-x-2">
-                         <GPTLogo className="w-4 h-4 text-emerald-500" />
-                         <span className="text-xs font-bold text-zinc-400 tracking-widest uppercase">{t.gptName}</span>
-                      </div>
+                  <div className="flex flex-col h-full relative">
+                    <div className="flex items-center gap-3 mb-5 pl-2">
+                       <div className="p-1.5 bg-emerald-900/30 rounded-lg border border-emerald-900/50">
+                         <GPTLogo className="w-5 h-5 text-emerald-500" />
+                       </div>
+                       <div>
+                         <span className="block text-sm font-bold text-zinc-200 tracking-wide">{t.gptName}</span>
+                         <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Answer A</span>
+                       </div>
                     </div>
                     <ChatBubble 
                       content={round.gptResponse || ""} 
@@ -499,12 +504,15 @@ export default function App() {
                   </div>
 
                   {/* Gemini Column */}
-                  <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-3 px-2">
-                      <div className="flex items-center space-x-2">
-                         <GeminiLogo className="w-4 h-4" />
-                         <span className="text-xs font-bold text-zinc-400 tracking-widest uppercase">{t.geminiName}</span>
-                      </div>
+                  <div className="flex flex-col h-full relative">
+                    <div className="flex items-center gap-3 mb-5 pl-2">
+                       <div className="p-1.5 bg-blue-900/30 rounded-lg border border-blue-900/50">
+                         <GeminiLogo className="w-5 h-5" />
+                       </div>
+                       <div>
+                         <span className="block text-sm font-bold text-zinc-200 tracking-wide">{t.geminiName}</span>
+                         <span className="block text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Answer B</span>
+                       </div>
                     </div>
                     <ChatBubble 
                       content={round.geminiResponse || ""} 
@@ -516,33 +524,38 @@ export default function App() {
 
                 {/* CRITIQUE THREADS */}
                 {round.critiques.map((critique, index) => (
-                  <div key={critique.id} className="animate-fade-in-up mt-8 relative">
-                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
-                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-800 border border-zinc-600 z-10"></div>
+                  <div key={critique.id} className="animate-fade-in-up mt-12 relative max-w-6xl mx-auto">
+                     {/* Connector Line */}
+                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
+                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-zinc-900 border-4 border-zinc-950 flex items-center justify-center z-10">
+                        <div className="w-2 h-2 rounded-full bg-zinc-600"></div>
+                     </div>
                      
-                     <div className="text-center mb-4">
-                       <span className="text-[10px] uppercase font-bold text-zinc-500 bg-zinc-900 px-2 py-1 rounded-full border border-zinc-800">
-                         Step {index + 1}
+                     <div className="text-center mb-8">
+                       <span className="text-xs uppercase font-extrabold text-zinc-400 bg-zinc-900 px-4 py-1.5 rounded-full border border-zinc-800 shadow-sm tracking-wider">
+                         Cross-Verification Phase {index + 1}
                        </span>
                      </div>
 
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
-                            <div className="flex items-center space-x-2 mb-4 text-emerald-400/80 border-b border-zinc-800 pb-2">
-                              <GPTLogo className="w-4 h-4 text-emerald-500" />
-                              <span className="text-xs font-bold uppercase tracking-wider">{t.gptCritiqueTitle}</span>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* GPT's Critique */}
+                        <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl p-6 md:p-8 relative overflow-hidden group/critique hover:bg-zinc-900/50 transition-colors">
+                            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800">
+                              <GPTLogo className="w-5 h-5 text-emerald-500" />
+                              <span className="text-sm font-bold uppercase tracking-wider text-emerald-400">{t.gptCritiqueTitle}</span>
                             </div>
-                            <div className="text-zinc-300 text-sm leading-relaxed opacity-90">
+                            <div className="prose prose-invert prose-sm max-w-none prose-p:text-zinc-300 prose-p:leading-7 prose-li:text-zinc-300">
                               <ReactMarkdown>{critique.gptContent}</ReactMarkdown>
                             </div>
                         </div>
 
-                        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-xl p-5 relative overflow-hidden group/critique hover:bg-zinc-900 transition-colors">
-                            <div className="flex items-center space-x-2 mb-4 text-blue-400/80 border-b border-zinc-800 pb-2">
-                              <GeminiLogo className="w-4 h-4" />
-                              <span className="text-xs font-bold uppercase tracking-wider">{t.geminiCritiqueTitle}</span>
+                        {/* Gemini's Critique */}
+                        <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl p-6 md:p-8 relative overflow-hidden group/critique hover:bg-zinc-900/50 transition-colors">
+                            <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-800">
+                              <GeminiLogo className="w-5 h-5" />
+                              <span className="text-sm font-bold uppercase tracking-wider text-blue-400">{t.geminiCritiqueTitle}</span>
                             </div>
-                            <div className="text-zinc-300 text-sm leading-relaxed opacity-90">
+                            <div className="prose prose-invert prose-sm max-w-none prose-p:text-zinc-300 prose-p:leading-7 prose-li:text-zinc-300">
                               <ReactMarkdown>{critique.geminiContent}</ReactMarkdown>
                             </div>
                         </div>
@@ -550,50 +563,52 @@ export default function App() {
                   </div>
                 ))}
                 
-                {/* Final Conclusion Inline Preview (Still useful as history) */}
+                {/* Final Conclusion Inline Preview */}
                 {(round.gptFinalConclusion || round.geminiFinalConclusion) && (
-                   <div className="mt-12 animate-fade-in-up">
-                      <div className="flex items-center justify-center mb-6">
-                         <div className="h-px w-full max-w-[100px] bg-zinc-800"></div>
-                         <span className="mx-4 text-xs font-bold text-zinc-500 uppercase tracking-widest border border-zinc-800 px-3 py-1 rounded-full bg-zinc-900">
-                           Final Conclusion
-                         </span>
-                         <div className="h-px w-full max-w-[100px] bg-zinc-800"></div>
+                   <div className="mt-16 animate-fade-in-up max-w-5xl mx-auto">
+                      <div className="flex items-center justify-center mb-8">
+                         <div className="h-px w-full max-w-[120px] bg-zinc-800"></div>
+                         <span className="mx-6 text-sm font-black text-zinc-400 uppercase tracking-[0.2em]">Final Conclusion</span>
+                         <div className="h-px w-full max-w-[120px] bg-zinc-800"></div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           {round.gptFinalConclusion && (
-                            <div className="relative group cursor-pointer" onClick={() => setFinalModalState({ isOpen: true, content: round.gptFinalConclusion!, provider: ModelProvider.GPT, title: t.gptFinalTitle })}>
-                               <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
-                               <div className="relative bg-zinc-900 border border-emerald-500/30 rounded-2xl p-6 shadow-xl hover:border-emerald-500/50 transition-colors">
-                                  <div className="flex items-center gap-3 mb-4 border-b border-zinc-800 pb-3">
-                                     <div className="p-1.5 bg-emerald-500/10 rounded-lg">
-                                       <CheckCircle size={18} className="text-emerald-500" />
+                            <div className="relative group cursor-pointer transform hover:-translate-y-1 transition-all duration-300" onClick={() => setFinalModalState({ isOpen: true, content: round.gptFinalConclusion!, provider: ModelProvider.GPT, title: t.gptFinalTitle })}>
+                               <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 rounded-3xl blur opacity-30 group-hover:opacity-70 transition-opacity"></div>
+                               <div className="relative bg-zinc-900 border border-emerald-500/20 rounded-3xl p-8 shadow-2xl hover:border-emerald-500/40 transition-colors h-full flex flex-col">
+                                  <div className="flex items-center gap-3 mb-6 border-b border-zinc-800 pb-4">
+                                     <div className="p-2 bg-emerald-500/10 rounded-xl">
+                                       <CheckCircle size={20} className="text-emerald-500" />
                                      </div>
-                                     <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">{t.gptFinalTitle}</h3>
+                                     <h3 className="text-base font-bold text-emerald-400 uppercase tracking-wider">{t.gptFinalTitle}</h3>
                                   </div>
-                                  <div className="line-clamp-6 text-zinc-400 text-sm">
+                                  <div className="line-clamp-[8] text-zinc-400 text-sm leading-7 mb-4 flex-1">
                                       <ReactMarkdown>{round.gptFinalConclusion}</ReactMarkdown>
                                   </div>
-                                  <div className="mt-4 text-center text-xs text-emerald-500/70 font-medium">Click to view full screen</div>
+                                  <div className="text-center py-2 bg-zinc-950/50 rounded-lg text-xs text-emerald-500/70 font-bold uppercase tracking-wide group-hover:bg-emerald-500/10 group-hover:text-emerald-400 transition-colors">
+                                     View Full Report
+                                  </div>
                                </div>
                             </div>
                           )}
 
                           {round.geminiFinalConclusion && (
-                            <div className="relative group cursor-pointer" onClick={() => setFinalModalState({ isOpen: true, content: round.geminiFinalConclusion!, provider: ModelProvider.GEMINI, title: t.geminiFinalTitle })}>
-                               <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600/20 to-blue-900/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
-                               <div className="relative bg-zinc-900 border border-blue-500/30 rounded-2xl p-6 shadow-xl hover:border-blue-500/50 transition-colors">
-                                  <div className="flex items-center gap-3 mb-4 border-b border-zinc-800 pb-3">
-                                     <div className="p-1.5 bg-blue-500/10 rounded-lg">
-                                       <Sparkles size={18} className="text-blue-500" />
+                            <div className="relative group cursor-pointer transform hover:-translate-y-1 transition-all duration-300" onClick={() => setFinalModalState({ isOpen: true, content: round.geminiFinalConclusion!, provider: ModelProvider.GEMINI, title: t.geminiFinalTitle })}>
+                               <div className="absolute -inset-0.5 bg-gradient-to-br from-blue-600/20 to-blue-900/20 rounded-3xl blur opacity-30 group-hover:opacity-70 transition-opacity"></div>
+                               <div className="relative bg-zinc-900 border border-blue-500/20 rounded-3xl p-8 shadow-2xl hover:border-blue-500/40 transition-colors h-full flex flex-col">
+                                  <div className="flex items-center gap-3 mb-6 border-b border-zinc-800 pb-4">
+                                     <div className="p-2 bg-blue-500/10 rounded-xl">
+                                       <Sparkles size={20} className="text-blue-500" />
                                      </div>
-                                     <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider">{t.geminiFinalTitle}</h3>
+                                     <h3 className="text-base font-bold text-blue-400 uppercase tracking-wider">{t.geminiFinalTitle}</h3>
                                   </div>
-                                  <div className="line-clamp-6 text-zinc-400 text-sm">
+                                  <div className="line-clamp-[8] text-zinc-400 text-sm leading-7 mb-4 flex-1">
                                       <ReactMarkdown>{round.geminiFinalConclusion}</ReactMarkdown>
                                   </div>
-                                  <div className="mt-4 text-center text-xs text-blue-500/70 font-medium">Click to view full screen</div>
+                                  <div className="text-center py-2 bg-zinc-950/50 rounded-lg text-xs text-blue-500/70 font-bold uppercase tracking-wide group-hover:bg-blue-500/10 group-hover:text-blue-400 transition-colors">
+                                     View Full Report
+                                  </div>
                                </div>
                             </div>
                           )}
@@ -603,11 +618,11 @@ export default function App() {
 
                 {/* Loading State */}
                 {(round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing) && (
-                   <div className="mt-8 relative animate-fade-in-up">
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 h-8 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
-                      <div className="flex justify-center text-zinc-400 text-sm animate-pulse space-x-3 items-center bg-zinc-900 py-3 px-6 rounded-full w-fit mx-auto border border-zinc-800">
-                          <RefreshCw className="animate-spin text-zinc-500" size={16}/>
-                          <span className="font-medium text-zinc-400">
+                   <div className="mt-12 relative animate-fade-in-up">
+                      <div className="absolute -top-12 left-1/2 -translate-x-1/2 h-12 w-px bg-zinc-800 border-l border-dashed border-zinc-700"></div>
+                      <div className="flex justify-center text-zinc-300 text-sm animate-pulse space-x-3 items-center bg-zinc-900 py-4 px-8 rounded-full w-fit mx-auto border border-zinc-700/50 shadow-xl">
+                          <RefreshCw className="animate-spin text-zinc-500" size={18}/>
+                          <span className="font-semibold tracking-wide">
                             {round.isCritiqueLoading ? t.critiqueLoading : t.finalizingLoading}
                           </span>
                       </div>
@@ -616,47 +631,47 @@ export default function App() {
 
                 {/* Actions */}
                 {!round.isGeminiLoading && !round.isGptLoading && (
-                    <div className="flex flex-col items-center gap-6 mt-12 mb-4 relative z-20 pb-8">
+                    <div className="flex flex-col items-center gap-8 mt-16 mb-8 relative z-20 pb-12">
                       
                       <div className="flex justify-center">
                         <Button 
                           variant="secondary" 
-                          size="md" 
-                          icon={<GitCompare size={16} />}
+                          size="lg" 
+                          icon={<GitCompare size={18} />}
                           onClick={() => initiateCritique(round.id)}
                           disabled={round.isCritiqueLoading || round.isGptFinalizing || round.isGeminiFinalizing}
-                          className="border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600 transition-colors shadow-lg shadow-black/20"
+                          className="border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700 hover:border-zinc-500 transition-all shadow-xl hover:shadow-2xl min-w-[200px]"
                         >
                           {round.critiques.length > 0 ? t.reCritiqueBtn : t.critiqueBtn}
                         </Button>
                       </div>
 
                       {round.critiques && round.critiques.length > 0 && (
-                        <div className="w-full max-w-2xl bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 animate-fade-in-up flex flex-col items-center">
-                          <div className="flex flex-col items-center mb-4 text-center">
-                             <h4 className="text-zinc-400 text-sm font-medium mb-1">{t.nextStepGuide}</h4>
-                             <p className="text-xs text-zinc-500">{t.finalSelectGuide}</p>
+                        <div className="w-full max-w-3xl bg-gradient-to-b from-zinc-900 to-zinc-950 border border-zinc-800 rounded-3xl p-8 animate-fade-in-up flex flex-col items-center shadow-2xl">
+                          <div className="flex flex-col items-center mb-6 text-center">
+                             <h4 className="text-zinc-300 text-base font-bold mb-2">{t.nextStepGuide}</h4>
+                             <p className="text-sm text-zinc-500">{t.finalSelectGuide}</p>
                           </div>
                           
-                          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto justify-center">
+                          <div className="flex flex-col md:flex-row gap-5 w-full md:w-auto justify-center">
                              <Button 
                               variant="gpt"
-                              size="md"
-                              icon={<CheckCircle size={16} />}
+                              size="lg"
+                              icon={<CheckCircle size={18} />}
                               onClick={() => initiateFinalize(round.id, ModelProvider.GPT)}
                               disabled={round.isGptFinalizing}
-                              className="bg-emerald-900/30 text-emerald-400 border border-emerald-900/50 hover:bg-emerald-900/50 md:min-w-[180px]"
+                              className="bg-emerald-900/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/40 hover:border-emerald-500/50 md:min-w-[220px] py-4"
                             >
                               {t.gptFinalizeBtn}
                             </Button>
 
                             <Button 
                               variant="gemini"
-                              size="md"
-                              icon={<Sparkles size={16} />}
+                              size="lg"
+                              icon={<Sparkles size={18} />}
                               onClick={() => initiateFinalize(round.id, ModelProvider.GEMINI)}
                               disabled={round.isGeminiFinalizing}
-                              className="bg-blue-900/30 text-blue-400 border border-blue-900/50 hover:bg-blue-900/50 md:min-w-[180px]"
+                              className="bg-blue-900/20 text-blue-400 border border-blue-500/30 hover:bg-blue-900/40 hover:border-blue-500/50 md:min-w-[220px] py-4"
                             >
                               {t.geminiFinalizeBtn}
                             </Button>
@@ -666,7 +681,7 @@ export default function App() {
                     </div>
                 )}
                 
-                <div className="h-px bg-zinc-900 w-full my-16"></div>
+                <div className="h-px bg-zinc-900 w-full my-20"></div>
               </div>
             ))}
             <div ref={messagesEndRef} className="h-4" />
