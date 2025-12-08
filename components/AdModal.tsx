@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import { X, Loader2, ShieldCheck, ExternalLink, Info, ArrowRight, Zap } from 'lucide-react';
-import { translations, Language } from '../translations';
+import { X, ArrowRight, Zap, ExternalLink, ShieldCheck, Info } from 'lucide-react';
+import { translations } from '../translations';
 
 interface AdModalProps {
   isOpen: boolean;
@@ -11,7 +11,11 @@ interface AdModalProps {
   currentPrompt?: string; 
 }
 
+// User provided affiliate link
+const AFFILIATE_LINK = 'https://link.coupang.com/a/db4fNa';
+
 // Mock Product Database for Contextual Targeting
+// Note: All links are set to the user's provided affiliate link to ensure commission.
 const PRODUCT_DB = [
   {
     keywords: ['코딩', '개발', '파이썬', '자바', 'react', 'code', 'programming'],
@@ -19,7 +23,7 @@ const PRODUCT_DB = [
     price: '139,000원',
     image: 'https://img.danawa.com/prod_img/500000/524/326/img/17326524_1.jpg?shrink=330:330&_v=20220712111306',
     desc: '개발자 필수템 1위. 손목이 편한 인체공학 디자인과 초고속 스크롤.',
-    link: 'https://www.coupang.com' // Replace with your actual affiliate link
+    link: AFFILIATE_LINK
   },
   {
     keywords: ['글쓰기', '블로그', '마케팅', 'write', 'blog'],
@@ -27,7 +31,7 @@ const PRODUCT_DB = [
     price: '169,000원',
     image: 'https://m.media-amazon.com/images/I/71J1S4I7JYL._AC_SL1500_.jpg',
     desc: '타건감이 즐거운 저소음 적축. 업무 효율을 높여주는 커스텀 키보드.',
-    link: 'https://www.coupang.com'
+    link: AFFILIATE_LINK
   },
   {
     keywords: ['건강', '피곤', '야근', 'health', 'tired'],
@@ -35,7 +39,7 @@ const PRODUCT_DB = [
     price: '118,000원',
     image: 'https://thumbnail7.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/8904/559868840c88346cb4307a697772652e061737e61405021e05d04588df8e.jpg',
     desc: '마시는 링거. 지친 직장인과 수험생을 위한 프리미엄 비타민.',
-    link: 'https://www.coupang.com'
+    link: AFFILIATE_LINK
   },
   {
     keywords: ['주식', '투자', '경제', 'money', 'stock'],
@@ -43,7 +47,7 @@ const PRODUCT_DB = [
     price: '16,000원',
     image: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791188331796.jpg',
     desc: '최상위 부자가 말하는 돈에 대한 모든 것. 300쇄 기념 에디션.',
-    link: 'https://www.coupang.com'
+    link: AFFILIATE_LINK
   },
   // Default Fallback
   {
@@ -52,7 +56,7 @@ const PRODUCT_DB = [
     price: '1,590,000원',
     image: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mba13-midnight-select-202402?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1708367688034',
     desc: 'AI 시대를 위한 압도적인 성능. M3 칩으로 더 강력하게.',
-    link: 'https://www.coupang.com'
+    link: AFFILIATE_LINK
   }
 ];
 
@@ -97,7 +101,7 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
              <ShieldCheck size={18} className="text-emerald-500"/>
              <span className="font-semibold text-sm">심층 분석 잠금 해제</span>
           </div>
-          {/* Close button hidden during ad to force view, or enabled if strategy allows */}
+          {/* Close button hidden during ad to force view */}
           <button 
             onClick={onClose}
             className="text-zinc-500 hover:text-white transition-colors"
@@ -115,7 +119,12 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
            </div>
 
            {/* Contextual Product Card */}
-           <div className="flex-1 bg-white rounded-xl overflow-hidden flex flex-col shadow-lg relative group mb-4">
+           <a 
+             href={product.link}
+             target="_blank"
+             rel="noopener noreferrer"
+             className="flex-1 bg-white rounded-xl overflow-hidden flex flex-col shadow-lg relative group mb-4 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
+           >
               <div className="h-48 bg-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
                  <img 
                    src={product.image} 
@@ -135,21 +144,16 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
                  </p>
                  <div className="mt-auto flex items-center justify-between">
                     <span className="text-red-600 font-extrabold text-lg">{product.price}</span>
-                    <a 
-                      href={product.link}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-1"
-                    >
+                    <span className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-1">
                       최저가 보기 <ExternalLink size={12} />
-                    </a>
+                    </span>
                  </div>
               </div>
-           </div>
+           </a>
            
            {/* Timer & Up-sell Button */}
            <div className="w-full text-center space-y-3">
-               {/* Upsell Button (Always visible now) */}
+               {/* Upsell Button (Always visible) */}
                <button 
                 onClick={onGoPremium}
                 className="w-full py-3 bg-zinc-900 border border-blue-500/30 text-blue-400 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-900/10 transition-colors group mb-2"
@@ -186,17 +190,19 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
             className={`w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center transition-all shadow-lg ${
               canClose 
                 ? 'bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-[1.02] active:scale-[0.98] shadow-emerald-900/20' 
-                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed hidden'
+                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
             }`}
           >
-            {canClose && (
-              <span className="flex items-center gap-2">
-                분석 결과 확인하기 <ArrowRight size={16} />
-              </span>
-            )}
+             <span className="flex items-center gap-2">
+                {canClose ? (
+                    <>분석 결과 확인하기 <ArrowRight size={16} /></>
+                ) : (
+                    "광고 시청 중..."
+                )}
+             </span>
           </button>
           
-          {/* Required Disclaimer (Improved Visibility) */}
+          {/* Required Disclaimer */}
           <div className="text-xs text-zinc-500 text-center leading-snug font-medium">
             <p>이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br/>이에 따른 일정액의 수수료를 제공받습니다.</p>
             <div className="mt-2 pt-2 border-t border-zinc-800/50 flex items-center justify-center gap-1 text-zinc-600 text-[10px]">
