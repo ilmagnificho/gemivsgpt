@@ -53,8 +53,8 @@ const PRODUCT_DB = [
     keywords: ['default'],
     name: 'Merry Christmas 트리&집꾸미기',
     price: '최대 70% SALE',
-    // Using a high-quality Christmas tree image to match the user's request
-    image: 'https://images.unsplash.com/photo-1544967082-d9d3fdd01a1d?auto=format&fit=crop&q=80&w=800',
+    // Using a reliable Christmas tree image
+    image: 'https://images.unsplash.com/photo-1512418490979-92798cec1380?auto=format&fit=crop&q=80&w=800',
     desc: '설레는 크리스마스 준비. 트리부터 조명, 소품까지 한 번에 만나보세요.',
     link: AFFILIATE_LINK
   }
