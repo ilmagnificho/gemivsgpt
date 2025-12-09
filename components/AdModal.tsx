@@ -53,8 +53,8 @@ const PRODUCT_DB = [
     keywords: ['default'],
     name: 'Merry Christmas 트리&집꾸미기',
     price: '최대 70% SALE',
-    // High quality Christmas interior image
-    image: 'https://images.unsplash.com/photo-1544967082-d9d3fdd13271?q=80&w=800&auto=format&fit=crop',
+    // New High-quality Christmas Tree Image
+    image: 'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=800&auto=format&fit=crop',
     desc: '설레는 크리스마스 준비. 트리부터 조명, 소품까지 한 번에 만나보세요.',
     link: AFFILIATE_LINK
   }
@@ -92,11 +92,11 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in-up">
-      <div className="bg-zinc-900 border border-zinc-700 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-fade-in-up">
+      <div className="bg-zinc-900 border border-zinc-700 w-full max-w-[400px] rounded-3xl shadow-2xl overflow-hidden flex flex-col relative">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-950">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 bg-zinc-950">
           <div className="flex items-center space-x-2 text-zinc-100">
              <ShieldCheck size={18} className="text-emerald-500"/>
              <span className="font-semibold text-sm">심층 분석 잠금 해제</span>
@@ -111,93 +111,103 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
         </div>
 
         {/* Content Container */}
-        <div className="p-6 flex flex-col bg-zinc-950 min-h-[420px] relative">
+        <div className="flex flex-col bg-zinc-950 relative">
            
            {/* Ad Badge (Required by Guidelines) */}
-           <div className="flex justify-end mb-2">
-              <span className="bg-zinc-800 text-zinc-400 text-[10px] px-2 py-0.5 rounded border border-zinc-700">광고</span>
+           <div className="absolute top-4 right-4 z-30">
+              <span className="bg-black/50 backdrop-blur-md text-white/90 text-[10px] px-2 py-0.5 rounded border border-white/10 shadow-sm">광고</span>
            </div>
 
-           {/* Contextual Product Card */}
+           {/* Product Card */}
            <a 
              href={product.link}
              target="_blank"
              rel="noopener noreferrer"
-             className="flex-1 bg-white rounded-xl overflow-hidden flex flex-col shadow-lg relative group mb-4 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
+             className="block w-full cursor-pointer group relative"
            >
-              {/* Image Container with Blur Effect for Better Fitting */}
-              <div className="h-56 bg-zinc-100 relative overflow-hidden flex items-center justify-center">
-                 {/* Blurred Background to fill space if image ratio doesn't match */}
+              {/* Image Container with Apple Music Style Blur */}
+              <div className="h-72 w-full relative overflow-hidden bg-zinc-900">
+                 {/* Blurred Background Layer */}
                  <div 
-                   className="absolute inset-0 bg-cover bg-center opacity-40 blur-xl scale-110"
+                   className="absolute inset-0 bg-cover bg-center opacity-50 blur-2xl scale-125 transition-transform duration-700 group-hover:scale-150"
                    style={{ backgroundImage: `url(${product.image})` }}
                  ></div>
                  
-                 {/* Main Image - Contain to show full content without cropping */}
-                 <img 
-                   src={product.image} 
-                   alt={product.name} 
-                   className="relative z-10 h-full w-full object-contain group-hover:scale-105 transition-transform duration-500"
-                 />
+                 {/* Vignette Overlay to darken edges */}
+                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-90"></div>
                  
-                 <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-pulse">
+                 {/* Main Image - Contain to show full content without cropping */}
+                 <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      className="max-h-full max-w-full object-contain shadow-2xl rounded-lg group-hover:scale-105 transition-transform duration-500 ring-1 ring-white/10"
+                    />
+                 </div>
+                 
+                 {/* Floaing Label */}
+                 <div className="absolute top-4 left-4 z-20 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg shadow-red-900/40 animate-pulse">
                     추천 아이템
                  </div>
               </div>
 
-              <div className="p-4 flex-1 flex flex-col bg-white">
-                 <h3 className="text-zinc-900 font-bold text-base leading-tight mb-1 line-clamp-2">
+              {/* Text Info Area */}
+              <div className="px-6 py-5 bg-zinc-950 -mt-2 relative z-10">
+                 <h3 className="text-zinc-100 font-bold text-lg leading-tight mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
                    {product.name}
                  </h3>
-                 <p className="text-zinc-500 text-xs mb-3 line-clamp-2">
+                 <p className="text-zinc-400 text-sm mb-4 line-clamp-2 leading-relaxed">
                    {product.desc}
                  </p>
-                 <div className="mt-auto flex items-center justify-between">
-                    <span className="text-red-600 font-extrabold text-lg">{product.price}</span>
-                    <span className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-1">
+                 <div className="flex items-center justify-between pt-2 border-t border-zinc-900">
+                    <span className="text-red-500 font-extrabold text-xl">{product.price}</span>
+                    <span className="bg-white text-black hover:bg-zinc-200 text-xs font-bold px-4 py-2.5 rounded-full transition-colors flex items-center gap-1.5 shadow-lg shadow-white/5">
                       최저가 보기 <ExternalLink size={12} />
                     </span>
                  </div>
               </div>
            </a>
            
-           {/* Timer & Up-sell Button */}
-           <div className="w-full text-center space-y-3">
-               {/* Upsell Button (Always visible) */}
+           {/* Timer & Up-sell Section */}
+           <div className="px-6 pb-6 pt-2 w-full text-center space-y-4 bg-zinc-950">
+               {/* Upsell Button */}
                <button 
                 onClick={onGoPremium}
-                className="w-full py-3 bg-zinc-900 border border-blue-500/30 text-blue-400 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-900/10 transition-colors group mb-2"
+                className="w-full py-3 bg-zinc-900 border border-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-900/10 hover:border-blue-500/40 transition-all group"
               >
                 <Zap size={16} className="text-yellow-400 fill-yellow-400 group-hover:scale-110 transition-transform"/>
                 <span className="font-bold text-sm">{translations.en.adModal.goPremium}</span>
               </button>
 
-              {!canClose ? (
-                <>
-                   <div className="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
-                      <div 
-                        className="bg-emerald-500 h-full transition-all duration-1000 ease-linear"
-                        style={{ width: `${((5 - timer) / 5) * 100}%` }}
-                      ></div>
-                   </div>
-                   <p className="text-zinc-500 text-xs">
-                     {timer}초 뒤 분석이 시작됩니다...
-                   </p>
-                </>
-              ) : (
-                 <p className="text-emerald-500 text-xs font-bold animate-pulse">
-                   분석이 완료되었습니다! 아래 버튼을 눌러 확인하세요.
-                 </p>
-              )}
+              <div className="space-y-2">
+                {!canClose ? (
+                  <>
+                    <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-emerald-500 h-full transition-all duration-1000 ease-linear shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                          style={{ width: `${((5 - timer) / 5) * 100}%` }}
+                        ></div>
+                    </div>
+                    <p className="text-zinc-500 text-xs font-medium">
+                      {timer}초 뒤 분석이 시작됩니다...
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-emerald-500 text-xs font-bold animate-pulse flex items-center justify-center gap-1">
+                    <CheckCircleIcon size={12} />
+                    분석이 완료되었습니다!
+                  </p>
+                )}
+              </div>
            </div>
         </div>
 
-        {/* Footer Action & Guidelines */}
+        {/* Footer Action */}
         <div className="p-4 bg-zinc-900 border-t border-zinc-800 flex flex-col gap-3">
           <button
             onClick={onAdComplete}
             disabled={!canClose}
-            className={`w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center transition-all shadow-lg ${
+            className={`w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center transition-all shadow-lg ${
               canClose 
                 ? 'bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-[1.02] active:scale-[0.98] shadow-emerald-900/20' 
                 : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
@@ -213,12 +223,8 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
           </button>
           
           {/* Required Disclaimer */}
-          <div className="text-xs text-zinc-500 text-center leading-snug font-medium">
+          <div className="text-[10px] text-zinc-600 text-center leading-snug font-medium">
             <p>이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br/>이에 따른 일정액의 수수료를 제공받습니다.</p>
-            <div className="mt-2 pt-2 border-t border-zinc-800/50 flex items-center justify-center gap-1 text-zinc-600 text-[10px]">
-               <Info size={10} />
-               <span>광고/제휴 문의: info@tetracorp.co.kr</span>
-            </div>
           </div>
         </div>
 
@@ -226,3 +232,21 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
     </div>
   );
 };
+
+// Simple Check Icon Component for internal use
+const CheckCircleIcon = ({ size = 16 }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="3" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+  </svg>
+);
