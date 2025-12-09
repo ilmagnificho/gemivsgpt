@@ -53,8 +53,8 @@ const PRODUCT_DB = [
     keywords: ['default'],
     name: 'Merry Christmas 트리&집꾸미기',
     price: '최대 70% SALE',
-    // Using a reliable Christmas tree image
-    image: 'https://images.unsplash.com/photo-1512418490979-92798cec1380?auto=format&fit=crop&q=80&w=800',
+    // High quality Christmas interior image
+    image: 'https://images.unsplash.com/photo-1544967082-d9d3fdd13271?q=80&w=800&auto=format&fit=crop',
     desc: '설레는 크리스마스 준비. 트리부터 조명, 소품까지 한 번에 만나보세요.',
     link: AFFILIATE_LINK
   }
@@ -111,7 +111,7 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
         </div>
 
         {/* Content Container */}
-        <div className="p-6 flex flex-col bg-zinc-950 min-h-[400px] relative">
+        <div className="p-6 flex flex-col bg-zinc-950 min-h-[420px] relative">
            
            {/* Ad Badge (Required by Guidelines) */}
            <div className="flex justify-end mb-2">
@@ -125,16 +125,26 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
              rel="noopener noreferrer"
              className="flex-1 bg-white rounded-xl overflow-hidden flex flex-col shadow-lg relative group mb-4 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
            >
-              <div className="h-48 bg-gray-100 flex items-center justify-center p-0 relative overflow-hidden">
+              {/* Image Container with Blur Effect for Better Fitting */}
+              <div className="h-56 bg-zinc-100 relative overflow-hidden flex items-center justify-center">
+                 {/* Blurred Background to fill space if image ratio doesn't match */}
+                 <div 
+                   className="absolute inset-0 bg-cover bg-center opacity-40 blur-xl scale-110"
+                   style={{ backgroundImage: `url(${product.image})` }}
+                 ></div>
+                 
+                 {/* Main Image - Contain to show full content without cropping */}
                  <img 
                    src={product.image} 
                    alt={product.name} 
-                   className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-500"
+                   className="relative z-10 h-full w-full object-contain group-hover:scale-105 transition-transform duration-500"
                  />
-                 <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md">
+                 
+                 <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md animate-pulse">
                     추천 아이템
                  </div>
               </div>
+
               <div className="p-4 flex-1 flex flex-col bg-white">
                  <h3 className="text-zinc-900 font-bold text-base leading-tight mb-1 line-clamp-2">
                    {product.name}
