@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { X, ArrowRight, Zap, ExternalLink, ShieldCheck, Info } from 'lucide-react';
 import { translations } from '../translations';
@@ -12,7 +11,7 @@ interface AdModalProps {
 }
 
 // User provided affiliate link
-const AFFILIATE_LINK = 'https://link.coupang.com/a/db4fNa';
+const AFFILIATE_LINK = 'https://link.coupang.com/a/dcA0Oj';
 
 // Mock Product Database for Contextual Targeting
 // Note: All links are set to the user's provided affiliate link to ensure commission.
@@ -52,10 +51,11 @@ const PRODUCT_DB = [
   // Default Fallback
   {
     keywords: ['default'],
-    name: 'Apple 2024 맥북 에어 13 M3',
-    price: '1,590,000원',
-    image: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mba13-midnight-select-202402?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1708367688034',
-    desc: 'AI 시대를 위한 압도적인 성능. M3 칩으로 더 강력하게.',
+    name: 'Merry Christmas 트리&집꾸미기',
+    price: '최대 70% SALE',
+    // Using a high-quality Christmas tree image to match the user's request
+    image: 'https://images.unsplash.com/photo-1544967082-d9d3fdd01a1d?auto=format&fit=crop&q=80&w=800',
+    desc: '설레는 크리스마스 준비. 트리부터 조명, 소품까지 한 번에 만나보세요.',
     link: AFFILIATE_LINK
   }
 ];
@@ -125,11 +125,11 @@ export const AdModal: React.FC<AdModalProps> = ({ isOpen, onClose, onAdComplete,
              rel="noopener noreferrer"
              className="flex-1 bg-white rounded-xl overflow-hidden flex flex-col shadow-lg relative group mb-4 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
            >
-              <div className="h-48 bg-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
+              <div className="h-48 bg-gray-100 flex items-center justify-center p-0 relative overflow-hidden">
                  <img 
                    src={product.image} 
                    alt={product.name} 
-                   className="object-contain h-full w-full mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                   className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-500"
                  />
                  <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md">
                     추천 아이템
